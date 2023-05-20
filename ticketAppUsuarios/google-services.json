@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "977817656055",
+    "project_id": "ticketappusuarios",
+    "storage_bucket": "ticketappusuarios.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977817656055:android:5d5987ae899f38d78b11f2",
+        "android_client_info": {
+          "package_name": "com.romanvazquezlareu.ticketAppUsuarios"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977817656055-890aq01oc9q51i8n1d5pkiiva02t43ma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.romanvazquezlareu.ticketAppUsuarios",
+            "certificate_hash": "3b917e9b6edf13da767b7746aa260247ce168405"
+          }
+        },
+        {
+          "client_id": "977817656055-tkf4vuci0ml5hvqlgr9odpsnek881ick.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.romanvazquezlareu.ticketAppUsuarios",
+            "certificate_hash": "260ac58b4a5cde85e7dbadc2b231b3309514d888"
+          }
+        },
+        {
+          "client_id": "977817656055-8dcuholuoqi1eq5ll8bu149p2j1taa9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbbkZ7L80kW6Ke93RnFxVXbXYX8sSre7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977817656055-8dcuholuoqi1eq5ll8bu149p2j1taa9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
