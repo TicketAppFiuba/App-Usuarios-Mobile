@@ -7,7 +7,7 @@ import { getData } from '../libs/LocalStorageHandlers';
 import EventCard from '../components/EventCard';
 import EventCardLarge from '../components/EventCardLarge';
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
     const [events, setEvents] = useState([
         {
           id: 1,

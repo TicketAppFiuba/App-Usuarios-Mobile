@@ -54,6 +54,7 @@ export default function Search({ navigation }) {
             image={event.image}
             distance={event.distance}
             category={event.category}
+            navigation={navigation}
           />
         ))}
       </View>

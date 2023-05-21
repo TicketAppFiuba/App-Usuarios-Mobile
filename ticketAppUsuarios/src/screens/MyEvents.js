@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import EventCard from '../components/EventCard';
 
-const MisEventosScreen = () => {
+const MyEvents = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('liked');
   const [likedEvents, setLikedEvents] = useState([]);
   const [bookedEvents, setBookedEvents] = useState([]);
@@ -42,6 +42,7 @@ const MisEventosScreen = () => {
             image={event.image}
             distance={event.distance}
             category={event.category}
+            navigation={navigation}
         />
 
     ));
@@ -179,4 +180,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MisEventosScreen;
+export default MyEvents;
