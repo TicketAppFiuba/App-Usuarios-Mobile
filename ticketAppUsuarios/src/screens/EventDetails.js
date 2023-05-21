@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import FAQItem from '../components/FAQItem';
+import DenunciaModal from '../components/DenunciaModal';
+import ShareButton from '../components/ShareButton';
 
 const event = {
   id: 1,
@@ -23,14 +26,38 @@ const event = {
   ],
 };
 
-  
-
 const EventDetails = ({ route, navigation }) => {
-//   const { event } = route.params;
+  const [isDenunciaModalVisible, setDenunciaModalVisible] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+
+  const handleOpenDenunciaModal = () => {
+    setDenunciaModalVisible(true);
+  };
+
+  const handleCloseDenunciaModal = () => {
+    setDenunciaModalVisible(false);
+  };
+
+  const toggleOptions = () => {
+    setShowOptions(!showOptions);
+  };
 
   return (
     <ScrollView style={styles.container}>
       <Image source={{ uri: event.image }} style={styles.image} />
+      <TouchableOpacity style={styles.optionsButton} onPress={toggleOptions}>
+        <Ionicons name="ellipsis-vertical-outline" size={32} color="white" style={styles.optionsIcon}/>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.shareButton}>
+        <ShareButton />
+      </TouchableOpacity>
+      {showOptions && (
+        <View style={styles.optionsContainer}>
+          <TouchableOpacity style={styles.optionButton} onPress={handleOpenDenunciaModal}>
+            <Text style={styles.optionText}>Denunciar</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.detailsContainer}>
         <Text style={styles.date}>{event.date}</Text>
         <Text style={styles.location}>{event.location}</Text>
@@ -43,7 +70,6 @@ const EventDetails = ({ route, navigation }) => {
             {item.time} - {item.activity}
           </Text>
         ))}
-
       </View>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Dirección</Text>
@@ -51,17 +77,15 @@ const EventDetails = ({ route, navigation }) => {
         {/* Renderizar mapa con la ubicación del evento */}
       </View>
       <View style={styles.sectionContainer}>
-          {event.faqs.map((faq, index) => (
-            <FAQItem
-              key={index}
-              question={faq.question}
-              answer={faq.answer}
-            />
-          ))}
+        {event.faqs.map((faq, index) => (
+          <FAQItem key={index} question={faq.question} answer={faq.answer} />
+        ))}
       </View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={()=>navigation.navigate('Ticket')}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Ticket')}>
         <Text style={styles.buttonText}>Reservar Entrada</Text>
       </TouchableOpacity>
+
+      <DenunciaModal visible={isDenunciaModalVisible} onClose={handleCloseDenunciaModal} />
     </ScrollView>
   );
 };
@@ -73,7 +97,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 250,
   },
   detailsContainer: {
     position: 'absolute',
@@ -123,6 +147,53 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  denunciaButton: {
+    backgroundColor: '#FF0000',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  denunciaButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  optionsButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+  },
+  optionsContainer: {
+    position: 'absolute',
+    top: 64,
+    right: 30,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    zIndex: 1,
+  },
+  optionsIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  optionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  optionButton: {
+    marginBottom: 1,
+  },
+  shareButton: {
+    position: 'absolute',
+    top: 72,
+    right: 30,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  }
 });
 
 export default EventDetails;

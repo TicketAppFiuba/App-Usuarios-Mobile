@@ -1,6 +1,8 @@
 import React from 'react';
 import {Alert, Share, TouchableOpacity, StyleSheet, Text} from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
+
 const ShareButton = () => {
   const onShare = async () => {
     try {
@@ -22,24 +24,11 @@ const ShareButton = () => {
     }
   };
   return (
-    <TouchableOpacity style={styles.button} onPress={onShare}>
-      <Text style={styles.buttonText}>Compartir</Text>
+    <TouchableOpacity onPress={onShare}>
+      <Ionicons name="share-social-outline" size={32} color="white" />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-    button: {
-      backgroundColor: 'blue',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 5,
-    },
-    buttonText: {
-      color: 'white',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-  });
 
 export default ShareButton;
