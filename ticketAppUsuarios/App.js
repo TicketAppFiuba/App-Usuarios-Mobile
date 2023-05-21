@@ -11,11 +11,17 @@ import Ticket from './src/screens/Ticket';
 import Search from './src/screens/Search';
 import EventDetails from './src/screens/EventDetails';
 import BottomNavigationBar from './src/components/BottomNavigationBar';
+import NotificationModal from './src/components/NotificationModal';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
+  const [notificationVisible, setNotificationVisible] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationTitle, setNotificationTitle] = useState('');
+  const handleCloseNotification = () => {
+    setNotificationVisible(false);
+  };
   const [activeTab, setActiveTab] = useState(1);
 
   const handleTabChange = (tabIndex) => {
@@ -34,7 +40,7 @@ export default function App() {
 
   useEffect(() => {
     if (requestUserPermission()) {
-      // return fcm token for the device
+      // return fcm token for the device 
       messaging().getToken().then(token => {
         console.log(token);
       });
@@ -67,7 +73,9 @@ export default function App() {
     });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-        Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        setNotificationMessage(remoteMessage.notification.body);
+        setNotificationTitle(remoteMessage.notification.title);
+        setNotificationVisible(true);
     });
     }, []);
 
@@ -97,6 +105,12 @@ export default function App() {
             <BottomNavigationBar
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
+            />
+            <NotificationModal
+              visible={notificationVisible}
+              message={notificationMessage}
+              title={notificationTitle}
+              onClose={handleCloseNotification}
             />
         </NavigationContainer>
     ); 
