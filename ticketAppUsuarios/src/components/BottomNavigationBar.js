@@ -19,8 +19,8 @@ const BottomNavigationBar = ({ activeTab, onTabChange }) => {
             >
                 <Ionicons
                     name={activeTab === 1 ? 'home' : 'home-outline'}
-                    size={24}
-                    color={activeTab === 1 ? 'blue' : 'gray'}
+                    size={26}
+                    color={activeTab === 1 ? '#1286f7' : 'gray'}
                 />
             </TouchableOpacity>
             <TouchableOpacity
@@ -29,8 +29,8 @@ const BottomNavigationBar = ({ activeTab, onTabChange }) => {
             >
                 <Ionicons
                     name={activeTab === 2 ? 'search' : 'search-outline'}
-                    size={24}
-                    color={activeTab === 2 ? 'blue' : 'gray'}
+                    size={26}
+                    color={activeTab === 2 ? '#1286f7' : 'gray'}
                 />
             </TouchableOpacity>
             <TouchableOpacity
@@ -38,9 +38,9 @@ const BottomNavigationBar = ({ activeTab, onTabChange }) => {
                 onPress={() => handleTabChange(3, 'MyEvents')}
             >
                 <Ionicons
-                    name={activeTab === 3 ? 'person' : 'person-outline'}
-                    size={24}
-                    color={activeTab === 3 ? 'blue' : 'gray'}
+                    name={activeTab === 3 ? 'bookmark' : 'bookmark-outline'}
+                    size={26}
+                    color={activeTab === 3 ? '#1286f7' : 'gray'}
                 />
             </TouchableOpacity>
         </View>
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         borderTopWidth: 1,
         borderTopColor: 'gray',
-        paddingBottom: 8,
-        paddingTop: 8,
+        paddingBottom: 14,
+        paddingTop: 14,
     },
     tab: {
         flex: 1,
