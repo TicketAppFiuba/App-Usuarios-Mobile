@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { getData } from '../libs/LocalStorageHandlers';
 
 import EventCard from '../components/EventCard';
 import EventCardLarge from '../components/EventCardLarge';
-
 
 export default function Home({navigation}) {
     const [events, setEvents] = useState([
@@ -87,6 +86,7 @@ export default function Home({navigation}) {
                             title={event.title}
                             date={event.date}
                             image={event.image}
+                            navigation={navigation}
                         />
                     ))}                      
                     </View>
@@ -112,6 +112,8 @@ export default function Home({navigation}) {
                         image={event.image}
                         distance={event.distance}
                         category={event.category}
+                        navigation={navigation}
+
                     />
                     ))}
                     </View>

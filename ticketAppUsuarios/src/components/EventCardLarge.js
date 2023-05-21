@@ -1,15 +1,18 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const EventCardLarge = ({ title, date, image }) => {
+const EventCardLarge = ({ title, date, image, navigation }) => {
+    const handlePress = () => {
+        navigation.navigate('EventDetails');
+    };
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Image source={{ uri: image }} style={styles.image} />
       <View style={styles.overlay}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.date}>{date}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

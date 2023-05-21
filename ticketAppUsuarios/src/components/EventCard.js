@@ -1,15 +1,18 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function EventCard({ title, date, image, distance, category }) {
+export default function EventCard({ title, date, image, distance, category, navigation }) {
+    const handlePress = () => {
+        navigation.navigate('EventDetails');
+    };
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Image source={{ uri: image }} style={styles.image} />
       {distance && <Text style={styles.distance}>{distance} km</Text>}
       {category && <Text style={styles.category}>{category}</Text>}
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.date}>{date}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
