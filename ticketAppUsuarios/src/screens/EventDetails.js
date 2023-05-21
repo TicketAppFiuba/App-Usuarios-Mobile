@@ -25,7 +25,7 @@ const event = {
 
   
 
-const EventDetails = ({ route }) => {
+const EventDetails = ({ route, navigation }) => {
 //   const { event } = route.params;
 
   return (
@@ -51,15 +51,15 @@ const EventDetails = ({ route }) => {
         {/* Renderizar mapa con la ubicación del evento */}
       </View>
       <View style={styles.sectionContainer}>
-          {event.faqs.map((faq) => (
+          {event.faqs.map((faq, index) => (
             <FAQItem
-              key={faq.id}
+              key={index}
               question={faq.question}
               answer={faq.answer}
             />
           ))}
       </View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={()=>{}}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={()=>navigation.navigate('Ticket')}>
         <Text style={styles.buttonText}>Reservar Entrada</Text>
       </TouchableOpacity>
     </ScrollView>
