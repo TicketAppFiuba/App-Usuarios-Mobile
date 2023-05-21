@@ -51,10 +51,6 @@ export default function Home({ navigation }) {
         },
       ]);
 
-        const handleNotificationsPress = () => {
-            // Lógica para manejar el evento de clic en las notificaciones
-            console.log('Notificaciones clickeadas');
-        };
     return (
         <View style={{ flex: 1, paddingTop: 10 }}>
             <TouchableOpacity
@@ -62,8 +58,9 @@ export default function Home({ navigation }) {
                 position: 'absolute',
                 top: 20,
                 right: 10,
+                zIndex: 1,
                 }}
-                onPress={handleNotificationsPress}
+                onPress={() => navigation.navigate('Notifications')}
             >
                 <Ionicons name="notifications" size={26} color="gray" />
             </TouchableOpacity>

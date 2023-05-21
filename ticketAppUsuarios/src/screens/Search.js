@@ -37,6 +37,7 @@ export default function Search({ navigation }) {
         setEvents(data.events);
       })
       .catch((error) => {
+        setEvents(data.events)
         console.error(error);
       });
   };
