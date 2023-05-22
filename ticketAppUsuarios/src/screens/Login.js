@@ -16,11 +16,9 @@ export default function App({navigation}) {
     androidClientId:"651976534821-njeiiul5h073b0s321lvn9pevadj3aeg.apps.googleusercontent.com", // cambiar por id real
   });
 
-  const handleLogin = () => {
-    // promptAsync();
-    login();
-    navigation.navigate('Home');
-};
+  const handleUserSuspended = () => {
+    alert("Su usuario fue suspendido, por favor comuniquese con el servicio de soporte");
+  };
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -34,11 +32,17 @@ export default function App({navigation}) {
     let url = `https://0f87-201-212-239-28.ngrok-free.app/user/login?token=${token}`
     console.log(url)
     fetch(url)
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status === 403)
+        handleUserSuspended();
+      else 
+       return response.json();
+    })
     .then((jwt) => {
         storeData(jwt.access_token)
         .then((data)=>{
-            navigation.navigate('Home');
+          login();
+          navigation.navigate('Home');
         })
     })
     .catch((error) => {
@@ -59,7 +63,7 @@ export default function App({navigation}) {
         <Button
           title="Login con Google"
           disabled={!request}
-          onPress={handleLogin}
+          onPress={() => promptAsync()}
         />
     </View>
   );
