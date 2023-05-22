@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import EventCard from '../components/EventCard';
 import EventCardLarge from '../components/EventCardLarge';
-import { fetchFromBack } from '../services/fetchFromBack';
+import fetchFromBack from '../services/fetchFromBack';
 import GetDayOfWeek from '../libs/DaysOfWeek';
 
 export default function Home({ navigation }) {
