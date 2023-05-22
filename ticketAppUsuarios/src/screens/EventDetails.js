@@ -5,7 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import FAQItem from '../components/FAQItem';
 import DenunciaModal from '../components/DenunciaModal';
 import ShareButton from '../components/ShareButton';
-import { fetchFromBack } from '../services/fetchFromBack';
+import fetchFromBack from '../services/fetchFromBack';
+import GetDayOfWeek from '../libs/DaysOfWeek';
 
 const event = {
   id: 1,
@@ -33,12 +34,13 @@ const EventDetails = ({ route, navigation }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [event, setEvent] = useState();
   const [reservationId, setReservationId] = useState(null);
-  const [booked, setIsEventReserved] = useState(false);
+  const [booked, setBooked] = useState(false);
 
   useEffect(() => {
     fetchFromBack(`/user/event?event_id=${event_id}`)
     .then((response) => response.json())
     .then((data) => {
+      console.log("event details data: ", data)
         mappedEvent = {
           id: data.Event.id,
           title: data.Event.title,
@@ -46,7 +48,7 @@ const EventDetails = ({ route, navigation }) => {
           image: data.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
           category: data.Event.category,
           address: data.Event.direction,
-          description: data.Event.description,
+          description: JSON.parse(data.Event.description)["blocks"][0]["text"],
           agenda: data.Diary.map((section) => {
             return {
               time: section.time,
@@ -79,6 +81,39 @@ const EventDetails = ({ route, navigation }) => {
     })
   }, []);
     
+  const handleReservation = () => {
+    if (booked) {
+      navigation.navigate('Ticket', {
+        event_id: event?.id,
+        booked: booked,
+        title: event?.title,
+        date: event?.date,
+        address: event?.address,
+        })
+      return
+    }
+
+    fetchFromBack(`/user/event/reservation`, {
+      method: 'POST',
+      body: JSON.stringify({  event_id: event?.id, tickets: 1 }),
+
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setReservationId(data.code)
+      setBooked(true)
+      navigation.navigate('Ticket', {
+        event_id: event?.id,
+        booked: booked,
+        title: event?.title,
+        date: event?.date,
+        address: event?.address, 
+        })
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+  }
 
   const handleOpenDenunciaModal = () => {
     setDenunciaModalVisible(true);
@@ -130,8 +165,8 @@ const EventDetails = ({ route, navigation }) => {
           <FAQItem key={index} question={faq.question} answer={faq.answer} />
         ))}
       </View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Ticket', {event_id: event?.id, booked: booked})}>
-        { booked? (
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => handleReservation()}>
+        { !booked? (
             <Text style={styles.buttonText}>Reservar Entrada</Text>
           ) : (
             <Text style={styles.buttonText}>Ver Ticket</Text>
