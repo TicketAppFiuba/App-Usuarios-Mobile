@@ -21,7 +21,7 @@ export default function EventCard({ title, date, image, distance, category, navi
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.date}>{date}</Text>
       <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
-        <Ionicons name={isLiked ? 'heart' : 'heart-outline'} size={24} color={isLiked ? 'red' : 'black'} />
+        <Ionicons name={isLiked ? 'heart' : 'heart-outline'} size={32} color={isLiked ? 'red' : 'black'} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
