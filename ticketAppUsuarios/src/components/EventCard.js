@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EventCard({ title, date, image, distance, category, navigation }) {
-    const handlePress = () => {
-        navigation.navigate('EventDetails');
-    };
+  const [isLiked, setLiked] = useState(false);
+
+  const handleLike = () => {
+    setLiked(!isLiked);
+  };
+
+  const handlePress = () => {
+    navigation.navigate('EventDetails');
+  };
+
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Image source={{ uri: image }} style={styles.image} />
@@ -12,6 +20,9 @@ export default function EventCard({ title, date, image, distance, category, navi
       {category && <Text style={styles.category}>{category}</Text>}
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.date}>{date}</Text>
+      <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
+        <Ionicons name={isLiked ? 'heart' : 'heart-outline'} size={24} color={isLiked ? 'red' : 'black'} />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 }
@@ -67,5 +78,10 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 12,
     color: '#888',
+  },
+  likeButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
 });
