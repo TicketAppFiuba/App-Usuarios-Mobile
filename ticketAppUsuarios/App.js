@@ -11,6 +11,8 @@ import Ticket from './src/screens/Ticket';
 import Search from './src/screens/Search';
 import EventDetails from './src/screens/EventDetails';
 import Notifications from './src/screens/Notifications';
+import Login from './src/screens/Login';
+
 
 import Login from './src/screens/Login';
 import BottomNavigationBar from './src/components/BottomNavigationBar';

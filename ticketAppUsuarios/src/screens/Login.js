@@ -12,8 +12,7 @@ export default function App({navigation}) {
   const { login, isLoggedIn } = useContext(AuthContext);
   const [token, setToken] = useState("");
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId:"651976534821-njeiiul5h073b0s321lvn9pevadj3aeg.apps.googleusercontent.com",
-    androidClientId:"651976534821-njeiiul5h073b0s321lvn9pevadj3aeg.apps.googleusercontent.com", // cambiar por id real
+    androidClientId:"651976534821-nbuletbjnpgr8rf0q03quv7d8osn4onp.apps.googleusercontent.com"
   });
 
   const handleUserSuspended = () => {
