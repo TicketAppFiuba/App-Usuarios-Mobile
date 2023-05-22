@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchFromBack } from '../services/fetchFromBack';
 
-const Ticket = () => {
+const Ticket = ({ route }) => {
+  const { title, code, location, date, time } = route.params;
+
+  useEffect(() => {
+    fetchFromBack(`/event/${event_id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setEvent(data);
+      })
+      .catch((error) => {        console.error(error);
+      });
+  }, []);
+
   const event = {
     title: 'Evento de Ejemplo',
-    id: 'ABC123',
+    code: 'ABC123',
     location: 'Ciudad de Ejemplo',
     date: '10 de julio 2023',
     time: '19:00',
@@ -18,7 +31,7 @@ const Ticket = () => {
     <View style={styles.container}>
       <Text style={styles.title}>{event.title}</Text>
       <QRCode value={qrCodeValue} size={200} style={styles.qrCode} />
-      <Text style={styles.qrCodeText}>{event.id}</Text>
+      <Text style={styles.qrCodeText}>{event.code}</Text>
       <View style={styles.detailsContainer}>
         <View style={styles.detailItem}>
           <Ionicons name="location-outline" size={32} color="black" />

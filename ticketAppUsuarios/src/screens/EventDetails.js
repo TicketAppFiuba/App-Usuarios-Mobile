@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import FAQItem from '../components/FAQItem';
 import DenunciaModal from '../components/DenunciaModal';
 import ShareButton from '../components/ShareButton';
+import { fetchFromBack } from '../services/fetchFromBack';
 
 const event = {
   id: 1,
@@ -27,8 +28,57 @@ const event = {
 };
 
 const EventDetails = ({ route, navigation }) => {
+  const { event_id } = route.params;
   const [isDenunciaModalVisible, setDenunciaModalVisible] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [event, setEvent] = useState();
+  const [reservationId, setReservationId] = useState(null);
+  const [booked, setIsEventReserved] = useState(false);
+
+  useEffect(() => {
+    fetchFromBack(`/user/event?event_id=${event_id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        mappedEvent = {
+          id: data.Event.id,
+          title: data.Event.title,
+          date: GetDayOfWeek(data.Event.date),
+          image: data.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+          category: data.Event.category,
+          address: data.Event.direction,
+          description: data.Event.description,
+          agenda: data.Diary.map((section) => {
+            return {
+              time: section.time,
+              activity: section.description
+            }
+          }),
+          faqs: data.FAQ.map((faq) => {
+            return {
+              question: faq.question,
+              answer: faq.response
+            }
+          })
+        }
+        setEvent(mappedEvent);
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+
+
+    fetchFromBack('/user/reservations')
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((event) => {
+        if (event.Event.id === event_id) {
+            setReservationId(event.Reservation.code)
+            setBooked(true)
+        }
+      })
+    })
+  }, []);
+    
 
   const handleOpenDenunciaModal = () => {
     setDenunciaModalVisible(true);
@@ -44,7 +94,7 @@ const EventDetails = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Image source={{ uri: event.image }} style={styles.image} />
+      <Image source={{ uri: event?.image }} style={styles.image} />
       <TouchableOpacity style={styles.optionsButton} onPress={toggleOptions}>
         <Ionicons name="ellipsis-vertical-outline" size={32} color="white" style={styles.optionsIcon}/>
       </TouchableOpacity>
@@ -59,13 +109,12 @@ const EventDetails = ({ route, navigation }) => {
         </View>
       )}
       <View style={styles.detailsContainer}>
-        <Text style={styles.date}>{event.date}</Text>
-        <Text style={styles.location}>{event.location}</Text>
+        <Text style={styles.date}>{event?.date}</Text>
+        <Text style={styles.location}>{event?.location}</Text>
       </View>
-      <Text style={styles.description}>{event.description}</Text>
+      <Text style={styles.description}>{event?.description}</Text>
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Agenda</Text>
-        {event.agenda.map((item, index) => (
+        {event?.agenda.map((item, index) => (
           <Text key={index} style={styles.agendaItem}>
             {item.time} - {item.activity}
           </Text>
@@ -73,16 +122,21 @@ const EventDetails = ({ route, navigation }) => {
       </View>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Dirección</Text>
-        <Text style={styles.address}>{event.address}</Text>
+        <Text style={styles.address}>{event?.address}</Text>
         {/* Renderizar mapa con la ubicación del evento */}
       </View>
       <View style={styles.sectionContainer}>
-        {event.faqs.map((faq, index) => (
+        {event?.faqs.map((faq, index) => (
           <FAQItem key={index} question={faq.question} answer={faq.answer} />
         ))}
       </View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Ticket')}>
-        <Text style={styles.buttonText}>Reservar Entrada</Text>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Ticket', {event_id: event?.id, booked: booked})}>
+        { booked? (
+            <Text style={styles.buttonText}>Reservar Entrada</Text>
+          ) : (
+            <Text style={styles.buttonText}>Ver Ticket</Text>
+          )
+        }
       </TouchableOpacity>
 
       <DenunciaModal visible={isDenunciaModalVisible} onClose={handleCloseDenunciaModal} />
@@ -141,6 +195,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     alignItems: 'center',
+    marginHorizontal: 90,
+    display: 'flex',
   },
   buttonText: {
     color: '#FFFFFF',

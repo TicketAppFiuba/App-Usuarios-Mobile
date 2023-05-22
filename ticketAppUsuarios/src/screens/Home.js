@@ -64,6 +64,7 @@ export default function Home({ navigation }) {
                             date={event.date}
                             image={event.image}
                             navigation={navigation}
+                            event_id={event.id}
                         />
                     ))}                      
                     </View>
@@ -90,7 +91,7 @@ export default function Home({ navigation }) {
                         distance={event.distance}
                         category={event.category}
                         navigation={navigation}
-
+                        event_id={event.id}
                     />
                     ))}
                     </View>

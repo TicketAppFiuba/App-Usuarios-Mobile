@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const EventCardLarge = ({ title, date, image, navigation }) => {
+const EventCardLarge = ({ event_id, title, date, image, navigation }) => {
     const handlePress = () => {
-        navigation.navigate('EventDetails');
+        navigation.navigate('EventDetails', {event_id: event_id});
     };
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import EventCard from '../components/EventCard';
+import { fetchFromBack } from '../services/fetchFromBack';
 
 const MyEvents = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('liked');
@@ -51,60 +52,52 @@ const MyEvents = ({ navigation }) => {
   const fetchData = (tab) => {
     // Simulación de una solicitud de red (fetch) para obtener eventos según la pestaña
     return new Promise((resolve) => {
-      setTimeout(() => {
-        // Datos de ejemplo para los eventos
-        let data = [];
+      // Datos de ejemplo para los eventos
+      let data = [];
 
-        if (tab === 'liked') {
-          data = [
-            {
-                id: 1,
-                title: 'Evento 1',
-                date: '25 de mayo',
-                image: 'https://picsum.photos/200/300?random=1',
-                distance: '5',
-                category: 'Música',
-              },
-              {
-                id: 2,
-                title: 'Evento 2',
-                date: '30 de mayo',
-                image: 'https://picsum.photos/200/300?random=2',
-                distance: '10',
-                category: 'Arte',
-              },
-              {
-                id: 3,
-                title: 'Evento 3',
-                date: '5 de junio',
-                image: 'https://picsum.photos/200/300?random=3',
-                distance: '8',
-                category: 'Deportes',
+      if (tab === 'liked') {
+        data = fetchFromBack('/user/favorites')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            mappedEvents = data.map((event) => {
+              return {
+                id: event.Event.id,
+                title: event.Event.title,
+                date: GetDayOfWeek(event.Event.date),
+                image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+                distance: Math.ceil(event.Distance),
+                category: event.Event.category,
               }
-          ];
+            });
+            return mappedEvents;
+          })
+          .catch((error) => {
+              console.error(error);
+          })
         } else if (tab === 'booked') {
-          data = [
-            {
-              id: 4,
-              title: 'Evento 4',
-              date: '15 de junio',
-              image: 'https://picsum.photos/200/300?random=4',
-              distance: '12',
-              category: 'Cine',
-            },
-            {
-              id: 5,
-              title: 'Evento 5',
-              date: '20 de junio',
-              image: 'https://picsum.photos/200/300?random=5',
-              distance: '6',
-              category: 'Gastronomía',
-            },
-          ];
-        }
+          data = fetchFromBack('/user/reservations')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            mappedEvents = data.map((event) => {
+              return {
+                id: event.Event.id,
+                title: event.Event.title,
+                date: GetDayOfWeek(event.Event.date),
+                image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+                distance: Math.ceil(event.Distance),
+                category: event.Event.category,
+              }
+            });
+            return mappedEvents;
+          })
+          .catch((error) => {
+              console.error(error);
+          })
+      }
 
-        resolve(data);
-      }, 2000); // Simulamos un retraso de 2 segundos para la solicitud de red
+      resolve(data);
     });
   };
 

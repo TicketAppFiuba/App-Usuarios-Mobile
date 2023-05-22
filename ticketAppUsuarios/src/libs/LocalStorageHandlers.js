@@ -16,6 +16,7 @@ const storeData = async (value) => {
         try {
             await AsyncStorage.setItem('token', value)
         } catch (e) {
+            console.log('error al guardar token jwt: '+ e)
             // saving error
         }
 }

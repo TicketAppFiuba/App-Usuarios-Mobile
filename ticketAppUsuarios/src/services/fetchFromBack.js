@@ -1,12 +1,14 @@
-import { getData } from '../libs/LocalStorageHandlers';
+import { AuthContext } from '../components/AuthProvider';
+import { useContext } from "react";
 
-const BASE_URL = 'https://b534-181-167-107-74.sa.ngrok.io';
+const BASE_URL = 'https://4805-181-167-107-74.sa.ngrok.io';
 
-export function fetchFromBack(url, options = {}) {
-  token = getData();
+const fetchFromBack = (url, options = {}) => {
+  const { backToken } = useContext(AuthContext);
+
   const headers = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${backToken}`,
   };
 
   const config = {
@@ -18,6 +20,8 @@ export function fetchFromBack(url, options = {}) {
   };
 
   const apiUrl = `${BASE_URL}${url}`;
-
+  console.log(config)
   return fetch(apiUrl, config);
 }
+
+export default fetchFromBack;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function EventCard({ title, date, image, distance, category, navigation }) {
+export default function EventCard({ event_id, title, date, image, distance, category, navigation }) {
   const [isLiked, setLiked] = useState(false);
 
   const handleLike = () => {
@@ -10,7 +10,7 @@ export default function EventCard({ title, date, image, distance, category, navi
   };
 
   const handlePress = () => {
-    navigation.navigate('EventDetails');
+    navigation.navigate('EventDetails', {event_id: event_id});
   };
 
   return (
