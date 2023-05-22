@@ -60,7 +60,7 @@ export default function Home({ navigation }) {
                 right: 10,
                 zIndex: 1,
                 }}
-                onPress={() => navigation.navigate('Notifications')}
+                onPress={() => navigation.navigate('Notificaciones')}
             >
                 <Ionicons name="notifications" size={26} color="gray" />
             </TouchableOpacity>

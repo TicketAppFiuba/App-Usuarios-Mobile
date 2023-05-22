@@ -95,7 +95,7 @@ export default function App() {
                     headerTitle: "Ticket",
                 }}/>
                 <Stack.Screen name="Search" component={Search} options={{headerShown: false}}/>
-                <Stack.Screen name="Notifications" component={Notifications} options={{headerShown: false}}/>
+                <Stack.Screen name="Notificaciones" component={Notifications} />
                 <Stack.Screen name="EventDetails" component={EventDetails} options={{
                     headerStyle: {
                     headerTransparent: true,
