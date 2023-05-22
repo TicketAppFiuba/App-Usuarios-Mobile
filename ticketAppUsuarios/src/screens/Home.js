@@ -2,54 +2,34 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { getData } from '../libs/LocalStorageHandlers';
-
 import EventCard from '../components/EventCard';
 import EventCardLarge from '../components/EventCardLarge';
+import { fetchFromBack } from '../services/fetchFromBack';
+import GetDayOfWeek from '../libs/DaysOfWeek';
 
 export default function Home({ navigation }) {
-    const [events, setEvents] = useState([
-        {
-          id: 1,
-          title: 'Evento 1',
-          date: '25 de mayo',
-          image: 'https://picsum.photos/200/300?random=1',
-          distance: '5',
-          category: 'Música',
-        },
-        {
-          id: 2,
-          title: 'Evento 2',
-          date: '30 de mayo',
-          image: 'https://picsum.photos/200/300?random=2',
-          distance: '10',
-          category: 'Arte',
-        },
-        {
-          id: 3,
-          title: 'Evento 3',
-          date: '5 de junio',
-          image: 'https://picsum.photos/200/300?random=3',
-          distance: '8',
-          category: 'Deportes',
-        },
-        {
-          id: 4,
-          title: 'Evento 4',
-          date: '15 de junio',
-          image: 'https://picsum.photos/200/300?random=4',
-          distance: '12',
-          category: 'Cine',
-        },
-        {
-          id: 5,
-          title: 'Evento 5',
-          date: '20 de junio',
-          image: 'https://picsum.photos/200/300?random=5',
-          distance: '6',
-          category: 'Gastronomía',
-        },
-      ]);
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        fetchFromBack('/user/events')
+            .then((response) => response.json())
+            .then((data) => {
+                mappedEvents = data.map((event) => {
+                    return {
+                        id: event.Event.id,
+                        title: event.Event.title,
+                        date: GetDayOfWeek(event.Event.date),
+                        image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+                        distance: Math.ceil(event.Distance),
+                        category: event.Event.category,
+                    }
+                });
+                setEvents(mappedEvents);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+    }, []);
 
     return (
         <View style={{ flex: 1, paddingTop: 10 }}>

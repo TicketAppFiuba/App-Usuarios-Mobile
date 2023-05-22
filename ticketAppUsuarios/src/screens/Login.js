@@ -59,11 +59,19 @@ export default function App({navigation}) {
         }}>
             TicketApp
         </Text>
-        <Button
-          title="Login con Google"
-          disabled={!request}
-          onPress={() => promptAsync()}
+        { isLoggedIn ? (
+            <Button
+            title="Continuar a la aplicación"
+            disabled={!request}
+            onPress={() => navigation.navigate('Home')}
+          />
+        ) : (
+          <Button
+            title="Login con Google"
+            disabled={!request}
+            onPress={() => login() && navigation.navigate('Home')}
         />
+        )}
     </View>
   );
 }
