@@ -12,8 +12,10 @@ import Search from './src/screens/Search';
 import EventDetails from './src/screens/EventDetails';
 import Notifications from './src/screens/Notifications';
 
+import Login from './src/screens/Login';
 import BottomNavigationBar from './src/components/BottomNavigationBar';
 import NotificationModal from './src/components/NotificationModal';
+import { AuthProvider } from './src/components/AuthProvider';
 
 const Stack = createNativeStackNavigator();
 
@@ -83,7 +85,9 @@ export default function App() {
 
     return (
         <NavigationContainer>
+          <AuthProvider>
             <Stack.Navigator>
+                <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
                 <Stack.Screen name="Home" component={Home} options={{headerShown: false}}/>
                 <Stack.Screen name="MyEvents" component={MyEvents} options={{headerShown: false}}/>
                 <Stack.Screen name="Ticket" component={Ticket} options={{
@@ -115,6 +119,7 @@ export default function App() {
               title={notificationTitle}
               onClose={handleCloseNotification}
             />
+          </AuthProvider>
         </NavigationContainer>
     ); 
 }

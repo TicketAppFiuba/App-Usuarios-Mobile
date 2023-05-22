@@ -1,18 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { storeData } from "../libs/LocalStorageHandlers";
+import { AuthContext } from '../components/AuthProvider';
 
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App({navigation}) {
+  const { login, isLoggedIn } = useContext(AuthContext);
   const [token, setToken] = useState("");
-
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId:"651976534821-njeiiul5h073b0s321lvn9pevadj3aeg.apps.googleusercontent.com",
+    androidClientId:"651976534821-njeiiul5h073b0s321lvn9pevadj3aeg.apps.googleusercontent.com", // cambiar por id real
   });
+
+  const handleLogin = () => {
+    // promptAsync();
+    login();
+    navigation.navigate('Home');
+};
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -42,18 +50,16 @@ export default function App({navigation}) {
   return (
     <View style={styles.container}>
         <Text style={{
-            fontWeight: 'bold',
-            fontSize: 46,
+            fontWeight: 'light',
+            fontSize: 40,
             paddingBottom: 40,
         }}>
-            𝓣𝓲𝓬𝓴𝓮𝓽 𝓐𝓹𝓹
+            TicketApp
         </Text>
         <Button
-          title="Ingresar con Google"
+          title="Login con Google"
           disabled={!request}
-          onPress={() => {
-            promptAsync();
-          }}
+          onPress={handleLogin}
         />
     </View>
   );

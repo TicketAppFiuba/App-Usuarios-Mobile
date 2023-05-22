@@ -1,9 +1,12 @@
 import React from 'react';
+import { useContext } from "react";
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from './AuthProvider';
 
 const BottomNavigationBar = ({ activeTab, onTabChange }) => {
+    const { isLoggedIn } = useContext(AuthContext);
     const navigation = useNavigation();
 
     const handleTabChange = (tabIndex, routeName) => {
@@ -12,37 +15,41 @@ const BottomNavigationBar = ({ activeTab, onTabChange }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.tab}
-                onPress={() => handleTabChange(1, 'Home')}
-            >
-                <Ionicons
-                    name={activeTab === 1 ? 'home' : 'home-outline'}
-                    size={26}
-                    color={activeTab === 1 ? '#1286f7' : 'gray'}
-                />
-            </TouchableOpacity>
-            <TouchableOpacity
-            style={styles.tab}
-            onPress={() => handleTabChange(2, 'Search')}
-            >
-                <Ionicons
-                    name={activeTab === 2 ? 'search' : 'search-outline'}
-                    size={26}
-                    color={activeTab === 2 ? '#1286f7' : 'gray'}
-                />
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.tab}
-                onPress={() => handleTabChange(3, 'MyEvents')}
-            >
-                <Ionicons
-                    name={activeTab === 3 ? 'bookmark' : 'bookmark-outline'}
-                    size={26}
-                    color={activeTab === 3 ? '#1286f7' : 'gray'}
-                />
-            </TouchableOpacity>
+        <View>
+            { isLoggedIn ? (
+                <View style={styles.container}>
+                    <TouchableOpacity
+                        style={styles.tab}
+                        onPress={() => handleTabChange(1, 'Home')}
+                    >
+                        <Ionicons
+                            name={activeTab === 1 ? 'home' : 'home-outline'}
+                            size={26}
+                            color={activeTab === 1 ? '#1286f7' : 'gray'}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                    style={styles.tab}
+                    onPress={() => handleTabChange(2, 'Search')}
+                    >
+                        <Ionicons
+                            name={activeTab === 2 ? 'search' : 'search-outline'}
+                            size={26}
+                            color={activeTab === 2 ? '#1286f7' : 'gray'}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.tab}
+                        onPress={() => handleTabChange(3, 'MyEvents')}
+                    >
+                        <Ionicons
+                            name={activeTab === 3 ? 'bookmark' : 'bookmark-outline'}
+                            size={26}
+                            color={activeTab === 3 ? '#1286f7' : 'gray'}
+                        />
+                    </TouchableOpacity>
+                </View>
+            ) : null}
         </View>
     );
 };
