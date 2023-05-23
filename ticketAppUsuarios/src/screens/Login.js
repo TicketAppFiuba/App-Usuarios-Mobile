@@ -29,7 +29,7 @@ export default function App({navigation}) {
 
   const getJwt = async () => {
     // if (!token) return;
-    let url = `https://4805-181-167-107-74.sa.ngrok.io/user/login?token=asd&name=tomas&mail=mail`
+    let url = `https://5cd4-201-212-239-28.ngrok-free.app/user/login?token=eFE3vbtKRX-WPSyH2lmHdz:APA91bE5XDP61DNwGsCz9iaagX07P8hXBRTuSXi376SZbuKQ5q4TJ1EfzzM1QBRNmNlCs4VSOCbcwmA_Iy8Yslbkz5tx-qqRqacjOS_SpTFt9v5SXxeLc00uklHVhVtpn1JDWoBjjf4w&name=Roman Vazquez Lareu&mail=romanvazquezlareu@gmail.com`
     fetch(url)
     .then((response) => {
       if (response.status === 403)
@@ -42,7 +42,7 @@ export default function App({navigation}) {
         setBackToken(jwt.access_token);
         login();
         messaging().getToken().then(fcm_token => {
-          fetchFromBack('/user/firebase_token', { method: 'PUT', token: fcm_token})
+          fetchFromBack(`/user/firebase_token?token=${fcm_token}`, { method: 'PUT'})
         });
 
         navigation.navigate('Home');
