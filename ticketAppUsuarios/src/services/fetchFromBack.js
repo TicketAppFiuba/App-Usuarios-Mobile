@@ -1,14 +1,15 @@
 import { AuthContext } from '../components/AuthProvider';
 import { useContext } from "react";
+import data from '../data';
 
-const BASE_URL = 'https://4805-181-167-107-74.sa.ngrok.io';
+const BASE_URL = 'https://5cd4-201-212-239-28.ngrok-free.app';
 
 const fetchFromBack = (url, options = {}) => {
-  const { backToken } = useContext(AuthContext);
+  
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${backToken}`,
+    Authorization: `Bearer ${data["token"]}`,
   };
 
   const config = {
