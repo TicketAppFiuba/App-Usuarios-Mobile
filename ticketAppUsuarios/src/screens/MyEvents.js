@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import EventCard from '../components/EventCard';
-import { fetchFromBack } from '../services/fetchFromBack';
+import fetchFromBack from '../services/fetchFromBack';
 
 const MyEvents = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('liked');
