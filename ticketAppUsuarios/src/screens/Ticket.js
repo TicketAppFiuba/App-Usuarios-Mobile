@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchFromBack } from '../services/fetchFromBack';
+import fetchFromBack from '../services/fetchFromBack';
 
 const Ticket = ({ route }) => {
-  const { title, code, location, date, time } = route.params;
+  const { title, code, address, date, event_id } = route.params;
 
   useEffect(() => {
     fetchFromBack(`/event/${event_id}`)
@@ -18,11 +18,10 @@ const Ticket = ({ route }) => {
   }, []);
 
   const event = {
-    title: 'Evento de Ejemplo',
+    title: title,
     code: 'ABC123',
-    location: 'Ciudad de Ejemplo',
-    date: '10 de julio 2023',
-    time: '19:00',
+    address: address,
+    date: date,
   };
 
   const qrCodeValue = event.id;
@@ -35,15 +34,11 @@ const Ticket = ({ route }) => {
       <View style={styles.detailsContainer}>
         <View style={styles.detailItem}>
           <Ionicons name="location-outline" size={32} color="black" />
-          <Text style={styles.detailText}>{event.location}</Text>
+          <Text style={styles.detailText}>{event.address}</Text>
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="calendar-outline" size={32} color="black" />
           <Text style={styles.detailText}>{event.date}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Ionicons name="time-outline" size={32} color="black" />
-          <Text style={styles.detailText}>{event.time}</Text>
         </View>
       </View>
     </View>
