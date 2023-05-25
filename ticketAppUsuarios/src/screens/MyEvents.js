@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import EventCard from '../components/EventCard';
-import fetchFromBack from '../services/fetchFromBack';
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
+
+import GetDayOfWeek from '../libs/DaysOfWeek';
+import { API_BASE_URL } from '../constant.js';
 
 const MyEvents = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('liked');
@@ -9,13 +12,16 @@ const MyEvents = ({ navigation }) => {
   const [bookedEvents, setBookedEvents] = useState([]);
 
   useEffect(() => {
-    fetchData('liked')
-      .then((data) => setLikedEvents(data))
-      .catch((error) => console.error(error));
+    AsyncStorageFunctions.getData('token')
+      .then((token) => {
+        fetchData('liked', token)
+          .then((data) => setLikedEvents(data))
+          .catch((error) => console.error("fetch liked: ", error));
 
-    fetchData('booked')
-      .then((data) => setBookedEvents(data))
-      .catch((error) => console.error(error));
+        fetchData('booked', token)
+          .then((data) => setBookedEvents(data))
+          .catch((error) => console.error("fetch booked: ", error));
+      })
   }, []);
 
   const handleTabChange = (tab) => {
@@ -23,7 +29,7 @@ const MyEvents = ({ navigation }) => {
   };
 
   const renderEvents = () => {
-    let events;
+    let events = null;
 
     if (activeTab === 'liked') {
       events = likedEvents;
@@ -31,7 +37,7 @@ const MyEvents = ({ navigation }) => {
       events = bookedEvents;
     }
 
-    if (events.length === 0) {
+    if (!events) {
       return <Text>No hay eventos disponibles</Text>;
     }
 
@@ -49,14 +55,16 @@ const MyEvents = ({ navigation }) => {
     ));
   };
 
-  const fetchData = (tab) => {
+  const fetchData = (tab, token) => {
     // Simulación de una solicitud de red (fetch) para obtener eventos según la pestaña
     return new Promise((resolve) => {
       // Datos de ejemplo para los eventos
       let data = [];
 
       if (tab === 'liked') {
-        data = fetchFromBack('/user/favorites')
+        data = fetch(`${API_BASE_URL}/user/favorites`, {
+            headers: {authorization: `Bearer ${token}`}
+        })
           .then((response) => response.json())
           .then((data) => {
             console.log(data)
@@ -64,7 +72,7 @@ const MyEvents = ({ navigation }) => {
               return {
                 id: event.Event.id,
                 title: event.Event.title,
-                date: GetDayOfWeek(event.Event.date),
+                date: GetDayOfWeek(event?.Event.date),
                 image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
                 distance: Math.ceil(event.Distance),
                 category: event.Event.category,
@@ -73,18 +81,19 @@ const MyEvents = ({ navigation }) => {
             return mappedEvents;
           })
           .catch((error) => {
-              console.error(error);
+              console.error("fetch favorites: ", error);
           })
         } else if (tab === 'booked') {
-          data = fetchFromBack('/user/reservations')
+          data = fetch(`${API_BASE_URL}/user/reservations`,{
+            headers: {authorization: `Bearer ${token}`}
+          })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data)
             mappedEvents = data.map((event) => {
               return {
                 id: event.Event.id,
                 title: event.Event.title,
-                date: GetDayOfWeek(event.Event.date),
+                date: GetDayOfWeek(event?.Event.date),
                 image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
                 distance: Math.ceil(event.Distance),
                 category: event.Event.category,
@@ -93,7 +102,7 @@ const MyEvents = ({ navigation }) => {
             return mappedEvents;
           })
           .catch((error) => {
-              console.error(error);
+              console.error("fetch: ", error);
           })
       }
 

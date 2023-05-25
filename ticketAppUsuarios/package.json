@@ -11,7 +11,9 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "github:react-native-async-storage/async-storage",
     "@react-native-firebase/app": "^17.5.0",
+    "@react-native-firebase/auth": "^17.5.0",
     "@react-native-firebase/messaging": "^17.5.0",
+    "@react-native-google-signin/google-signin": "^10.0.1",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "eas-cli": "^3.13.0",

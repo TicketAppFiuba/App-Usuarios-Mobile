@@ -1,17 +1,25 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { API_BASE_URL } from '../constant.js';
 
 import EventCard from '../components/EventCard';
 import EventCardLarge from '../components/EventCardLarge';
-import fetchFromBack from '../services/fetchFromBack';
 import GetDayOfWeek from '../libs/DaysOfWeek';
+
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
+
+
 
 export default function Home({ navigation }) {
     const [events, setEvents] = useState([]);
 
-    useEffect(() => {
-        fetchFromBack('/user/events')
+    useLayoutEffect(() => {
+        AsyncStorageFunctions.getData('token')
+        .then((token) => {
+            fetch(`${API_BASE_URL}/user/events`, {
+                headers: {authorization: `Bearer ${token}`}
+            })
             .then((response) => response.json())
             .then((data) => {
                 mappedEvents = data.map((event) => {
@@ -27,8 +35,9 @@ export default function Home({ navigation }) {
                 setEvents(mappedEvents);
             })
             .catch((error) => {
-                console.error(error);
+                console.error("Feth events: ", error);
             })
+        })
     }, []);
 
     return (

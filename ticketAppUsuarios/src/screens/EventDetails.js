@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { API_BASE_URL } from '../constant.js';
+
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 
 import FAQItem from '../components/FAQItem';
 import DenunciaModal from '../components/DenunciaModal';
 import ShareButton from '../components/ShareButton';
-import fetchFromBack from '../services/fetchFromBack';
 import GetDayOfWeek from '../libs/DaysOfWeek';
 
 const event = {
@@ -37,46 +39,57 @@ const EventDetails = ({ route, navigation }) => {
   const [booked, setBooked] = useState(false);
 
   useEffect(() => {
-    fetchFromBack(`/user/event?event_id=${event_id}`)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("event details data: ", data)
-        mappedEvent = {
-          id: data.Event.id,
-          title: data.Event.title,
-          date: GetDayOfWeek(data.Event.date),
-          image: data.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
-          category: data.Event.category,
-          address: data.Event.direction,
-          description: JSON.parse(data.Event.description)["blocks"][0]["text"],
-          agenda: data.Diary.map((section) => {
-            return {
-              time: section.time,
-              activity: section.description
-            }
-          }),
-          faqs: data.FAQ.map((faq) => {
-            return {
-              question: faq.question,
-              answer: faq.response
-            }
-          })
-        }
-        setEvent(mappedEvent);
-    })
-    .catch((error) => {
-        console.error(error);
-    })
+    AsyncStorageFunctions.getData('token')
+    .then((token) => {
+
+      fetch(`${API_BASE_URL}/user/event?event_id=${event_id}`, {
+        headers: { authorization: `Bearer ${token}` }
+      })
+      .then((response) => response.json())
+      .then((data) => {
+          mappedEvent = {
+            id: data.Event.id,
+            title: data.Event.title,
+            date: GetDayOfWeek(data.Event.date),
+            image: data.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+            category: data.Event.category,
+            address: data.Event.direction,
+            description: JSON.parse(data.Event.description)["blocks"][0]["text"],
+            agenda: data.Diary.map((section) => {
+              return {
+                time: section.time,
+                activity: section.description
+              }
+            }),
+            faqs: data.FAQ.map((faq) => {
+              return {
+                question: faq.question,
+                answer: faq.response
+              }
+            })
+          }
+          setEvent(mappedEvent);
+      })
+      .catch((error) => {
+          console.error(error);
+      })
+    
 
 
-    fetchFromBack('/user/reservations')
-    .then((response) => response.json())
-    .then((data) => {
-      data.forEach((event) => {
-        if (event.Event.id === event_id) {
-            setReservationId(event.Reservation.code)
-            setBooked(true)
-        }
+      fetch(`${API_BASE_URL}/user/reservations`, {
+        headers: { authorization: `Bearer ${token}` }
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach((event) => {
+          if (event.Event.id === event_id) {
+              setReservationId(event.Reservation.code)
+              setBooked(true)
+          }
+        })
+      })
+      .catch((error) => {
+        console.error("Reservations from user error: ", error);
       })
     })
   }, []);
@@ -92,26 +105,31 @@ const EventDetails = ({ route, navigation }) => {
         })
       return
     }
-
-    fetchFromBack(`/user/event/reservation`, {
-      method: 'POST',
-      body: JSON.stringify({  event_id: event?.id, tickets: 1 }),
-
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      setReservationId(data.code)
-      setBooked(true)
-      navigation.navigate('Ticket', {
-        event_id: event?.id,
-        booked: booked,
-        title: event?.title,
-        date: event?.date,
-        address: event?.address, 
-        })
-    })
-    .catch((error) => {
-      console.error(error);
+    AsyncStorageFunctions.getData('token')
+    .then((token) => {
+      fetch(`${API_BASE_URL}/user/event/reservation`, {
+        method: 'POST',
+        body: JSON.stringify({  event_id: event?.id, tickets: 1 }),
+        headers: { 
+          authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setReservationId(data.code)
+        setBooked(true)
+        navigation.navigate('Ticket', {
+          event_id: event?.id,
+          booked: booked,
+          title: event?.title,
+          date: event?.date,
+          address: event?.address, 
+          })
+      })
+      .catch((error) => {
+        console.error("Making reservation error:", error);
+      })
     })
   }
 
@@ -126,10 +144,9 @@ const EventDetails = ({ route, navigation }) => {
   const toggleOptions = () => {
     setShowOptions(!showOptions);
   };
-
   return (
     <ScrollView style={styles.container}>
-      <Image source={{ uri: event?.image }} style={styles.image} />
+      <Image source={{ uri: event?.image ? event?.image : "https://i.imgur.com/UYiroysl.jpg" }} style={styles.image} />
       <TouchableOpacity style={styles.optionsButton} onPress={toggleOptions}>
         <Ionicons name="ellipsis-vertical-outline" size={32} color="white" style={styles.optionsIcon}/>
       </TouchableOpacity>

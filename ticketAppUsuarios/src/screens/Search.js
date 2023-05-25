@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { View, TouchableOpacity, Text, ScrollView, StyleSheet } from 'react-native';
+
+import { API_BASE_URL } from '../constant.js';
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
+import GetDayOfWeek from '../libs/DaysOfWeek.js';
 
 import SearchBar from '../components/SearchBar';
 import EventCard from '../components/EventCard';
@@ -26,42 +30,24 @@ const categories = [
 ];
 
 export default function Search({ navigation }) {
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: 'Evento 1',
-      date: '25 de mayo',
-      image: 'https://picsum.photos/200/300?random=1',
-      distance: '5',
-      category: 'Música',
-    },
-    {
-      id: 2,
-      title: 'Evento 2',
-      date: '30 de mayo',
-      image: 'https://picsum.photos/200/300?random=2',
-      distance: '10',
-      category: 'Arte',
-    },
-    {
-      id: 3,
-      title: 'Evento 3',
-      date: '30 de mayo',
-      image: 'https://picsum.photos/200/300?random=3',
-      distance: '10',
-      category: 'Arte',
-    },
-    {
-      id: 4,
-      title: 'Evento 4',
-      date: '30 de mayo',
-      image: 'https://picsum.photos/200/300?random=4',
-      distance: '10',
-      category: 'Arte',
-    },
-    // Agrega más eventos aquí...
-  ]);
+  const [events, setEvents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  useLayoutEffect(() => {
+    AsyncStorageFunctions.getData('token')
+      .then((token) => {
+        fetch(`${API_BASE_URL}/user/events`, {
+          headers: { authorization: `Bearer ${token}` }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setEvents(data);
+          })
+          .catch((error) => {
+            console.error("Fetch events: ", error);
+          })
+      })
+  }, []);
 
   const handleSearch = (searchText) => {
     // Realiza la lógica de búsqueda con el texto ingresado y la categoría seleccionada
@@ -124,15 +110,16 @@ export default function Search({ navigation }) {
         {/* Renderizar las tarjetas de eventos */}
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         {/* Renderizar las tarjetas de eventos */}
-        {events.map((event) => (
+        {events.map((event, index) => (
           <EventCard
-            key={event.id}
-            title={event.title}
-            date={event.date}
-            image={event.image}
-            distance={event.distance}
-            category={event.category}
+            key={index}
+            title={event?.Event.title}
+            date={GetDayOfWeek(event?.Event.date)}
+            image={event?.Images[0]["link"] ? event?.Images[0]["link"] : 'https://picsum.photos/700'}
+            distance={event?.Event.distance}
+            category={event?.Event.category}
             navigation={navigation}
+            event_id={event?.Event.id}
           />
         ))}
       </ScrollView>

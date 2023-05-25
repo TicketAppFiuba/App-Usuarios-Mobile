@@ -2,43 +2,49 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Ionicons } from '@expo/vector-icons';
-import fetchFromBack from '../services/fetchFromBack';
+import { API_BASE_URL } from '../constant.js';
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
+
 
 const Ticket = ({ route }) => {
-  const { title, code, address, date, event_id } = route.params;
+  const { title, address, date, event_id } = route.params;
+  const [code, setCode] = useState();
 
   useEffect(() => {
-    fetchFromBack(`/event/${event_id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setEvent(data);
+    AsyncStorageFunctions.getData('token')
+      .then((token) => {
+      fetch(`${API_BASE_URL}/user/reservations`, {
+        headers: { authorization: `Bearer ${token}` }
       })
-      .catch((error) => {        console.error(error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          data.forEach((event) => {
+            if (event.Event.id === event_id) {
+              setCode(event.Reservation.code)
+            }
+          })
+        })
+        .catch((error) => {        
+          console.error(error);
+        });
+    })
   }, []);
 
-  const event = {
-    title: title,
-    code: 'ABC123',
-    address: address,
-    date: date,
-  };
 
-  const qrCodeValue = event.id;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{event.title}</Text>
-      <QRCode value={qrCodeValue} size={200} style={styles.qrCode} />
-      <Text style={styles.qrCodeText}>{event.code}</Text>
+      <Text style={styles.title}>{title}</Text>
+      <QRCode value={code} size={200} style={styles.qrCode} />
+      <Text style={styles.qrCodeText}>{code}</Text>
       <View style={styles.detailsContainer}>
         <View style={styles.detailItem}>
           <Ionicons name="location-outline" size={32} color="black" />
-          <Text style={styles.detailText}>{event.address}</Text>
+          <Text style={styles.detailText}>{address}</Text>
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="calendar-outline" size={32} color="black" />
-          <Text style={styles.detailText}>{event.date}</Text>
+          <Text style={styles.detailText}>{date}</Text>
         </View>
       </View>
     </View>
@@ -61,8 +67,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   qrCodeText: {
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 16,
+    marginTop: 16,
   },
   detailsContainer: {
     alignItems: 'center',
