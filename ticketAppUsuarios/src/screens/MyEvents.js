@@ -54,10 +54,10 @@ const MyEvents = ({ navigation }) => {
     if (!events || events.length === 0) {
       return <Text>No hay eventos disponibles</Text>;
     }
-    console.log(events);
     return events.map((event) => (
       <EventCard
         key={event.id}
+        event_id={event.id}
         title={event.title}
         date={event.date}
         image={event.image}
