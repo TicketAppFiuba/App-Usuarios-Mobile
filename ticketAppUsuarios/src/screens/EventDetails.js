@@ -10,25 +10,6 @@ import DenunciaModal from '../components/DenunciaModal';
 import ShareButton from '../components/ShareButton';
 import GetDayOfWeek from '../libs/DaysOfWeek';
 
-const event = {
-  id: 1,
-  title: 'Recital de The Cure',
-  date: '10 de julio 2023',
-  location: 'Estadio XYZ',
-  image: 'https://picsum.photos/800/400?random=1',
-  description: '¡No te pierdas el esperado recital de The Cure en vivo! Disfruta de sus clásicos y sus últimas canciones en una noche inolvidable.',
-  address: 'Calle Principal 123, Ciudad de Ejemplo',
-  agenda: [
-    { time: '19:00', activity: 'Apertura de puertas' },
-    { time: '20:00', activity: 'Banda telonera: The Smiths' },
-    { time: '21:00', activity: 'Concierto principal de The Cure' },
-  ],
-  faqs: [
-    { question: '¿Cuál es el precio de las entradas?', answer: 'El precio de las entradas varía según la ubicación. Puedes encontrar más información en nuestro sitio web oficial o en puntos de venta autorizados.' },
-    { question: '¿Se permiten cámaras fotográficas?', answer: 'Por respeto a los artistas, no se permite el uso de cámaras fotográficas o grabadoras durante el recital. Sin embargo, podrás disfrutar de la cobertura oficial del evento a través de nuestros medios oficiales.' },
-    { question: '¿Se venden entradas en la puerta?', answer: 'No se venderán entradas en la puerta. Te recomendamos adquirir tus entradas con anticipación para asegurar tu lugar en el recital.' },
-  ],
-};
 
 const EventDetails = ({ route, navigation }) => {
   const { event_id } = route.params;
