@@ -50,19 +50,23 @@ export default function Search({ navigation }) {
   }, []);
 
   const handleSearch = (searchText) => {
-    // Realiza la lógica de búsqueda con el texto ingresado y la categoría seleccionada
-    // Por ejemplo, puedes utilizar un fetch para obtener los eventos coincidentes con el término de búsqueda y la categoría
-    // fetch(`https://api.example.com/events?q=${searchText}&category=${selectedCategory}`)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     // Aquí puedes establecer los eventos encontrados en el estado
-    //     // Supongamos que los datos de respuesta tienen la siguiente estructura:
-    //     // { events: [{ id, title, date, image }, ...] }
-    //     setEvents(data.events);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    AsyncStorageFunctions.getData('token')
+      .then((token) => {
+        let url = `${API_BASE_URL}/user/events?title=${searchText}`;
+        if (selectedCategory !== '') {
+          url += `&category=${selectedCategory}`;
+        }
+        fetch(url, {
+          headers: { authorization: `Bearer ${token}` }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setEvents(data);
+          })
+          .catch((error) => {
+            console.error("Fetch events: ", error);
+          })
+      })
   };
 
   const handleCategorySelect = (category) => {
