@@ -1,45 +1,53 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 
 import AsyncStorageFunctions from '../libs/LocalStorageHandlers';
 
 const NotificationsScreen = () => {
-
   const [remoteMessages, setRemoteMessages] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const fetchNotifications = () => {
+    setRefreshing(true);
+
     AsyncStorageFunctions.getData('notifications')
       .then(storagedRemoteMessages => {
         const messages = storagedRemoteMessages ? JSON.parse(storagedRemoteMessages) : [];
         setRemoteMessages(messages);
-    })
-    .catch((error) => {
-      console.error("Error al leer Notifications:", error);
-    })
-  }, []);
+        setRefreshing(false);
+      })
+      .catch(error => {
+        console.error('Error al leer Notifications:', error);
+        setRefreshing(false);
+      });
+  };
 
-  const formatDate = (unix_timestamp) => {
-    
+  const formatDate = unix_timestamp => {
     var date = new Date(unix_timestamp);
-    // Hours part from the timestamp
     var hours = date.getHours();
-    // Minutes part from the timestamp
-    var minutes = "0" + date.getMinutes();
-    
+    var minutes = '0' + date.getMinutes();
+
     const DaysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const dayOfWeek = DaysOfWeek[date.getDay()];
 
-    // Will display time in 10:30:23 format
     var formattedTime = dayOfWeek + ' ' + hours + ':' + minutes.substr(-2);
 
     return formattedTime;
-  }
+  };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchNotifications} />
+      }
+    >
       {remoteMessages.map((remoteMessage, index) => (
-        // Console log remoteMessage
         <View key={index} style={styles.card}>
           <Text style={styles.title}>{remoteMessage.notification.title}</Text>
           <Text style={styles.message}>{remoteMessage.notification.body}</Text>
