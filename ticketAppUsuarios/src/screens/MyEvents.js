@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import EventCard from '../components/EventCard';
 import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 
@@ -10,22 +10,36 @@ const MyEvents = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('liked');
   const [likedEvents, setLikedEvents] = useState([]);
   const [bookedEvents, setBookedEvents] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    AsyncStorageFunctions.getData('token')
-      .then((token) => {
-        fetchData('liked', token)
-          .then((data) => setLikedEvents(data))
-          .catch((error) => console.error("fetch liked: ", error));
-
-        fetchData('booked', token)
-          .then((data) => setBookedEvents(data))
-          .catch((error) => console.error("fetch booked: ", error));
-      })
+    fetchEvents(activeTab);
   }, []);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    fetchEvents(tab);
+  };
+
+  const fetchEvents = (tab) => {
+    setRefreshing(true);
+
+    AsyncStorageFunctions.getData('token')
+      .then((token) => {
+        fetchData(tab, token)
+          .then((data) => {
+            if (tab === 'liked') {
+              setLikedEvents(data);
+            } else if (tab === 'booked') {
+              setBookedEvents(data);
+            }
+            setRefreshing(false);
+          })
+          .catch((error) => {
+            console.error('Error fetching events:', error);
+            setRefreshing(false);
+          });
+      });
   };
 
   const renderEvents = () => {
@@ -40,74 +54,53 @@ const MyEvents = ({ navigation }) => {
     if (!events || events.length === 0) {
       return <Text>No hay eventos disponibles</Text>;
     }
-
+    console.log(events);
     return events.map((event) => (
-        <EventCard
-            key={event.id}
-            title={event.title}
-            date={event.date}
-            image={event.image}
-            distance={event.distance}
-            category={event.category}
-            navigation={navigation}
-        />
-
+      <EventCard
+        key={event.id}
+        title={event.title}
+        date={event.date}
+        image={event.image}
+        distance={event?.distance ? event.distance : ''}
+        category={event.category}
+        navigation={navigation}
+      />
     ));
   };
 
   const fetchData = (tab, token) => {
-    // Simulación de una solicitud de red (fetch) para obtener eventos según la pestaña
-    return new Promise((resolve) => {
-      // Datos de ejemplo para los eventos
-      let data = [];
+    let url = '';
 
-      if (tab === 'liked') {
-        data = fetch(`${API_BASE_URL}/user/favorites`, {
-            headers: {authorization: `Bearer ${token}`}
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data)
-            mappedEvents = data.map((event) => {
-              return {
-                id: event.Event.id,
-                title: event.Event.title,
-                date: GetDayOfWeek(event?.Event.date),
-                image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
-                distance: Math.ceil(event.Distance),
-                category: event.Event.category,
-              }
-            });
-            return mappedEvents;
-          })
-          .catch((error) => {
-              console.error("fetch favorites: ", error);
-          })
-        } else if (tab === 'booked') {
-          data = fetch(`${API_BASE_URL}/user/reservations`,{
-            headers: {authorization: `Bearer ${token}`}
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            mappedEvents = data.map((event) => {
-              return {
-                id: event.Event.id,
-                title: event.Event.title,
-                date: GetDayOfWeek(event?.Event.date),
-                image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
-                distance: Math.ceil(event.Distance),
-                category: event.Event.category,
-              }
-            });
-            return mappedEvents;
-          })
-          .catch((error) => {
-              console.error("fetch: ", error);
-          })
-      }
+    if (tab === 'liked') {
+      url = `${API_BASE_URL}/user/favorites`;
+    } else if (tab === 'booked') {
+      url = `${API_BASE_URL}/user/reservations`;
+    }
 
-      resolve(data);
-    });
+    return fetch(url, {
+      headers: { authorization: `Bearer ${token}` },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const mappedEvents = data.map((event) => ({
+          id: event.Event.id,
+          title: event.Event.title,
+          date: GetDayOfWeek(event?.Event.date),
+          image: event?.Event.pic_id?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+          distance: Math.ceil(event.Distance),
+          category: event.Event.category,
+        }));
+
+        return mappedEvents;
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        return [];
+      });
+  };
+
+  const handleRefresh = () => {
+    fetchEvents(activeTab);
   };
 
   return (
@@ -127,7 +120,14 @@ const MyEvents = ({ navigation }) => {
           <Text style={styles.tabText}>Reservados</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.scrollView}>{renderEvents()}</ScrollView>
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {renderEvents()}
+      </ScrollView>
     </View>
   );
 };
