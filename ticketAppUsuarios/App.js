@@ -50,7 +50,7 @@ export default function App() {
     if (requestUserPermission()) {
       // return fcm token for the device 
       messaging().getToken().then(token => {
-        AsynStorageFunctions.getData()
+        AsynStorageFunctions.getData('token')
           .then((jwt) => {
             console.log('jwt', jwt);
             fetch(`${API_BASE_URL}/user/firebase_token?token=${token}`, {
@@ -92,9 +92,51 @@ export default function App() {
     // Register background handler
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         console.log('Message handled in the background!', remoteMessage);
+        AsynStorageFunctions.getData('notifications')
+        .then((storagedRemoteMessages) => {
+          let messages = storagedRemoteMessages ? JSON.parse(storagedRemoteMessages) : [];
+          // Agrega la nueva notificación al principio del arreglo
+          messages.unshift(remoteMessage);
+        
+          // Limita el arreglo a las últimas 10 notificaciones
+          messages = messages.slice(0, 10);
+          // Almacena el arreglo actualizado en AsyncStorage
+          AsynStorageFunctions.storeData(JSON.stringify(messages), 'notifications')
+          .then(() => {
+            console.log("Notificaciones guardadas")
+          })
+          .catch((error) => {
+            console.error("Error al guardar las notificaciones", error);
+          })
+        })
+        .catch((error) => {
+          console.error("Error al obtener las notificaciones", error);
+        })
     });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+        console.log("Remote mesage", remoteMessage)
+        
+        AsynStorageFunctions.getData('notifications')
+        .then((storagedRemoteMessages) => {
+          let messages = storagedRemoteMessages ? JSON.parse(storagedRemoteMessages) : [];
+          // Agrega la nueva notificación al principio del arreglo
+          messages.unshift(remoteMessage);
+        
+          // Limita el arreglo a las últimas 10 notificaciones
+          messages = messages.slice(0, 10);
+          // Almacena el arreglo actualizado en AsyncStorage
+          AsynStorageFunctions.storeData(JSON.stringify(messages), 'notifications')
+          .then(() => {
+            console.log("Notificaciones guardadas")
+          })
+          .catch((error) => {
+            console.error("Error al guardar las notificaciones", error);
+          })
+        })
+        .catch((error) => {
+          console.error("Error al obtener las notificaciones", error);
+        })
         setNotificationMessage(remoteMessage.notification.body);
         setNotificationTitle(remoteMessage.notification.title);
         setNotificationVisible(true);

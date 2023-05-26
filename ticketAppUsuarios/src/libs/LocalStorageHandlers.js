@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default {
-  getData: async () => {
+  getData: async (item) => {
     try {
-      const value = await AsyncStorage.getItem('token');
+      const value = await AsyncStorage.getItem(item);
       if (value !== null) {
         // value previously stored
         return value;
@@ -13,11 +13,11 @@ export default {
     }
   },
 
-  storeData: async (value) => {
+  storeData: async (value, key) => {
     try {
-      await AsyncStorage.setItem('token', value);
+      await AsyncStorage.setItem(key, value);
     } catch (e) {
-      console.log('error al guardar token jwt: ' + e);
+      console.log('error al guardar: ' + e);
       // saving error
     }
   }

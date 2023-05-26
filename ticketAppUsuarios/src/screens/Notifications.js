@@ -1,35 +1,49 @@
-import React from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
+
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers';
+
 const NotificationsScreen = () => {
-  const notifications = [
-    {
-      id: 1,
-      title: 'Nueva notificación',
-      message: '¡Hola! Tienes un nuevo mensaje en tu bandeja de entrada.',
-      date: '20 de mayo 2023',
-    },
-    {
-      id: 2,
-      title: 'Recordatorio',
-      message: 'Recuerda asistir al evento el próximo viernes a las 19:00 horas.',
-      date: '18 de mayo 2023',
-    },
-    {
-      id: 3,
-      title: 'Actualización de evento',
-      message: 'Se ha cambiado la ubicación del evento. Consulta los detalles actualizados.',
-      date: '15 de mayo 2023',
-    },
-  ];
+
+  const [remoteMessages, setRemoteMessages] = useState([]);
+
+  useEffect(() => {
+    AsyncStorageFunctions.getData('notifications')
+      .then(storagedRemoteMessages => {
+        const messages = storagedRemoteMessages ? JSON.parse(storagedRemoteMessages) : [];
+        setRemoteMessages(messages);
+    })
+    .catch((error) => {
+      console.error("Error al leer Notifications:", error);
+    })
+  }, []);
+
+  const formatDate = (unix_timestamp) => {
+    
+    var date = new Date(unix_timestamp);
+    // Hours part from the timestamp
+    var hours = date.getHours();
+    // Minutes part from the timestamp
+    var minutes = "0" + date.getMinutes();
+    
+    const DaysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const dayOfWeek = DaysOfWeek[date.getDay()];
+
+    // Will display time in 10:30:23 format
+    var formattedTime = dayOfWeek + ' ' + hours + ':' + minutes.substr(-2);
+
+    return formattedTime;
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {notifications.map((notification) => (
-        <View key={notification.id} style={styles.card}>
-          <Text style={styles.title}>{notification.title}</Text>
-          <Text style={styles.message}>{notification.message}</Text>
-          <Text style={styles.date}>{notification.date}</Text>
+      {remoteMessages.map((remoteMessage, index) => (
+        // Console log remoteMessage
+        <View key={index} style={styles.card}>
+          <Text style={styles.title}>{remoteMessage.notification.title}</Text>
+          <Text style={styles.message}>{remoteMessage.notification.body}</Text>
+          <Text style={styles.date}>{formatDate(remoteMessage.sentTime)}</Text>
         </View>
       ))}
     </ScrollView>

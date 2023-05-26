@@ -37,7 +37,7 @@ const MyEvents = ({ navigation }) => {
       events = bookedEvents;
     }
 
-    if (!events) {
+    if (!events || events.length === 0) {
       return <Text>No hay eventos disponibles</Text>;
     }
 

@@ -53,7 +53,7 @@ export default function Login({ navigation }) {
         return response.json();
       })
       .then((json) => {
-        AsyncStorageFunctions.storeData(json.access_token)
+        AsyncStorageFunctions.storeData(json.access_token, 'token')
         .then(() => {
           login();
           setBackToken(json.access_token);
