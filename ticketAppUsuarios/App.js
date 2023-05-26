@@ -29,6 +29,7 @@ export default function App() {
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationTitle, setNotificationTitle] = useState('');
+  const [notificationEventId, setNotificationEventId] = useState('');
   const handleCloseNotification = () => {
     setNotificationVisible(false);
   };
@@ -142,6 +143,7 @@ export default function App() {
         })
         setNotificationMessage(remoteMessage.notification.body);
         setNotificationTitle(remoteMessage.notification.title);
+        setNotificationEventId(remoteMessage.data.event_id);
         setNotificationVisible(true);
     });
     }, []);
@@ -181,6 +183,10 @@ export default function App() {
               message={notificationMessage}
               title={notificationTitle}
               onClose={handleCloseNotification}
+              onSeeEvent={() => {
+                handleCloseNotification();
+                RootNavigation.navigate('EventDetails', { event_id: notificationEventId });
+              }}
             />
           </AuthProvider>
         </NavigationContainer>
