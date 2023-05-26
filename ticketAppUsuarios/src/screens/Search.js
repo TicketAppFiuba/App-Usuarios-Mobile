@@ -85,6 +85,9 @@ export default function Search({ navigation }) {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoriesContainer}
+          style={{
+            maxHeight: 70,
+          }}
         >
           {categories.map((category) => (
             <TouchableOpacity
