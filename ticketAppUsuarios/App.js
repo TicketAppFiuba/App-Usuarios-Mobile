@@ -13,6 +13,8 @@ import EventDetails from './src/screens/EventDetails';
 import Notifications from './src/screens/Notifications';
 import Login from './src/screens/Login';
 
+import { navigationRef } from './src/components/RootNavigation';
+import * as RootNavigation from './src/components/RootNavigation';
 import { API_BASE_URL } from './src/constant.js';
 import AsynStorageFunctions from './src/libs/LocalStorageHandlers.js';
 
@@ -85,8 +87,9 @@ export default function App() {
     messaging().onNotificationOpenedApp( async (remoteMessage) => {
         console.log(
             'Notification caused app to open from background state:',
-            remoteMessage.notification,
+            remoteMessage,
         );
+        RootNavigation.navigate('EventDetails', { event_id: remoteMessage.data.event_id });
     });
 
     // Register background handler
@@ -144,7 +147,7 @@ export default function App() {
     }, []);
 
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <AuthProvider>
             <Stack.Navigator>
                 <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
