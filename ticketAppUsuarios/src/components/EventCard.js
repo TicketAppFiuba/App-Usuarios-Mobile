@@ -2,11 +2,33 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { API_BASE_URL } from '../constant.js';
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
+
 export default function EventCard({ event_id, title, date, image, distance, category, navigation }) {
   const [isLiked, setLiked] = useState(false);
 
   const handleLike = () => {
     setLiked(!isLiked);
+    let url;
+    // send like to server
+    AsyncStorageFunctions.getData('token')
+      .then((token) => {
+        fetch(`${API_BASE_URL}/user/event/favorite?event_id=${event_id}`, {
+          method: isLiked ? 'DELETE' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          }
+        })
+        })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.error('Error sending like:', error);
+          }
+        );
   };
 
   const handlePress = () => {
