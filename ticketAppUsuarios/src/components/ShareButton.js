@@ -21,7 +21,7 @@ const ShareButton = ({event_id, image, title, date, address, description }) => {
           "option": "SHORT"
         },
         "dynamicLinkInfo": {
-          "domainUriPrefix": "https://romanvazquezlareu.page.link",
+          "domainUriPrefix": "https://ticketAppFiuba.page.link",
           "link": `https://ticketApp/event=${event_id}`,
           "socialMetaTagInfo": {
             "socialTitle": `${title} el ${date} en ${address}`,
@@ -30,7 +30,7 @@ const ShareButton = ({event_id, image, title, date, address, description }) => {
           },
           "androidInfo": {
             "androidPackageName": "com.romanvazquezlareu.ticketAppUsuarios",
-            "androidFallbackLink": "https://ticketApp/event",
+            "androidFallbackLink": "https://play.google.com/",
           },
         }
     })
