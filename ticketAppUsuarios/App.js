@@ -11,6 +11,7 @@ import Search from './src/screens/Search';
 import EventDetails from './src/screens/EventDetails';
 import Notifications from './src/screens/Notifications';
 import Login from './src/screens/Login';
+import CustomCalendar from './src/screens/CustomCalendar';
 
 import { navigationRef } from './src/components/RootNavigation';
 import * as RootNavigation from './src/components/RootNavigation';
@@ -183,6 +184,7 @@ export default function App() {
                 <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
                 <Stack.Screen name="Home" component={Home} options={{headerShown: false}}/>
                 <Stack.Screen name="MyEvents" component={MyEvents} options={{headerShown: false}}/>
+                <Stack.Screen name="CustomCalendar" component={CustomCalendar} options={{headerShown: false}}/>
                 <Stack.Screen name="Ticket" component={Ticket} options={{
                     headerStyle: {
                     headerTransparent: true,

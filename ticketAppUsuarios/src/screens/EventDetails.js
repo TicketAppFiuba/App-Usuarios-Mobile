@@ -21,6 +21,7 @@ const EventDetails = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     AsyncStorageFunctions.getData('token').then((token) => {
       Promise.all([
         fetch(`${API_BASE_URL}/user/event?event_id=${event_id}`, {
@@ -68,7 +69,7 @@ const EventDetails = ({ route, navigation }) => {
           setIsLoading(false);
         });
     });
-  }, []);
+  }, [event_id]);
 
   const handleReservation = () => {
     if (booked) {
@@ -107,6 +108,29 @@ const EventDetails = ({ route, navigation }) => {
         });
     });
   };
+
+  const handleCalendarClick = (e, n) => {     
+   
+    let url = `${API_BASE_URL}/user/event/calendar?event_id=${event_id}`;
+    
+    AsyncStorageFunctions.getData('token')
+     .then((token) => { 
+      fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+          }
+      })
+        .then((response) => {
+          console.log(response);
+          navigation.navigate('CustomCalendar')
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+   })
+};
 
   const handleOpenDenunciaModal = () => {
     setDenunciaModalVisible(true);
@@ -183,7 +207,9 @@ const EventDetails = ({ route, navigation }) => {
           <Text style={styles.buttonText}>Ver Ticket</Text>
         )}
       </TouchableOpacity>
-
+      <TouchableOpacity style={styles.buttonContainer} onPress={(e) => handleCalendarClick(e, 'sign-in') }>
+          <Text style={styles.buttonText}>Agregar al calendario</Text>
+        </TouchableOpacity>
       <DenunciaModal visible={isDenunciaModalVisible} onClose={handleCloseDenunciaModal} />
     </ScrollView>
   );
