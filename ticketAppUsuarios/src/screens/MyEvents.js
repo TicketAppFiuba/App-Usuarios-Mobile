@@ -89,8 +89,8 @@ const MyEvents = ({ navigation }) => {
           mappedEvents = data.map((event) => ({
             id: event.id,
             title: event.title,
-            date: GetDayOfWeek(event?.date),
-            image: event?.pic_id?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+            date: GetDayOfWeek(event?.Event.date),
+            image: event?.Images[0].link  ?? 'https://i.imgur.com/UYiroysl.jpg',
             distance: Math.ceil(event.Distance),
             category: event.category,
           }));
