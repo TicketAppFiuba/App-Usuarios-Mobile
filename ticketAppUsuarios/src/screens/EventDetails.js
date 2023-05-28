@@ -32,7 +32,7 @@ const EventDetails = ({ route, navigation }) => {
       ])
         .then(([eventData, reservationsData]) => {
           const mappedEvent = {
-            id: eventData.Event.id,
+            id: eventData.Event?.id,
             title: eventData.Event.title,
             date: GetDayOfWeek(eventData.Event.date),
             image: eventData.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
@@ -55,7 +55,7 @@ const EventDetails = ({ route, navigation }) => {
           setEvent(mappedEvent);
 
           reservationsData.forEach((event) => {
-            if (event.Event.id === event_id) {
+            if (event?.Event.id === event_id) {
               setReservationId(event.Reservation.code);
               setBooked(true);
             }
@@ -138,7 +138,14 @@ const EventDetails = ({ route, navigation }) => {
         <Ionicons name="ellipsis-vertical-outline" size={32} color="white" style={styles.optionsIcon} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.shareButton}>
-        <ShareButton />
+        <ShareButton 
+        event_id = {event_id}
+        image = {event?.image ? event?.image : 'https://i.imgur.com/UYiroysl.jpg'}
+        title = {event?.title}
+        date = {event?.date}
+        address = {event?.address}
+        description = {event?.description}
+        />
       </TouchableOpacity>
       {showOptions && (
         <View style={styles.optionsContainer}>

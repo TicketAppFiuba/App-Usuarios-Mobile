@@ -1,15 +1,64 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Alert, Share, TouchableOpacity, StyleSheet, Text} from 'react-native';
+import  dynamicLinks  from '@react-native-firebase/dynamic-links';
 
 import { Ionicons } from '@expo/vector-icons';
 
-const ShareButton = () => {
+const ShareButton = ({event_id, image, title, date, address, description }) => {
+  
+  const [link, setLink] = React.useState(null);
+
+
+  useEffect(() => {
+    console.log(image)
+    fetch("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyAbbkZ7L80kW6Ke93RnFxVXbXYX8sSre7s", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "suffix": {
+          "option": "SHORT"
+        },
+        "dynamicLinkInfo": {
+          "domainUriPrefix": "https://romanvazquezlareu.page.link",
+          "link": `https://ticketApp/event=${event_id}`,
+          "socialMetaTagInfo": {
+            "socialTitle": `${title} el ${date} en ${address}`,
+            "socialDescription": `${description}`,
+            "socialImageLink": `${image}`
+          },
+          "androidInfo": {
+            "androidPackageName": "com.romanvazquezlareu.ticketAppUsuarios",
+            "androidFallbackLink": "https://ticketApp/event",
+          },
+        }
+    })
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      console.log("JSON: ", json)
+      setLink(json.shortLink)
+    })
+    .catch((error) => {
+      console.error("ERROR: ", error)
+    })
+
+  }, [event_id])
+  
+
+
+
+
   const onShare = async () => {
-    try {
-      const result = await Share.share({
+    console.log("AAA", link)
+      Share.share({
         message:
-          'React Native | A framework for building native apps using React',
-      });
+        link,
+        url: link,
+        
+      })
+    .then((result) => {
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
@@ -19,9 +68,10 @@ const ShareButton = () => {
       } else if (result.action === Share.dismissedAction) {
         // dismissed
       }
-    } catch (error) {
+    })
+    .catch((error) => {
       Alert.alert(error.message);
-    }
+    });
   };
   return (
     <TouchableOpacity onPress={onShare}>
