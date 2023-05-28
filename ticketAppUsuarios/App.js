@@ -1,7 +1,6 @@
-import { Alert } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import messaging from '@react-native-firebase/messaging';
-
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -30,6 +29,18 @@ export default function App() {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationTitle, setNotificationTitle] = useState('');
   const [notificationEventId, setNotificationEventId] = useState('');
+
+  const handleDynamicLink = link => {
+    // Handle dynamic link inside your own application
+    console.log('link handle', link);
+    const regex = /\/event=(\d+)/;
+    const match = link.url.match(regex);
+    const eventId = match[1]
+    console.log('event id', eventId);
+    RootNavigation.navigate('EventDetails', { event_id: eventId })
+  };
+
+
   const handleCloseNotification = () => {
     setNotificationVisible(false);
   };
@@ -50,6 +61,7 @@ export default function App() {
   }
 
   useEffect(() => {
+
     if (requestUserPermission()) {
       // return fcm token for the device 
       messaging().getToken().then(token => {
@@ -146,6 +158,22 @@ export default function App() {
         setNotificationEventId(remoteMessage.data.event_id);
         setNotificationVisible(true);
     });
+    
+    dynamicLinks()
+      .getInitialLink()
+      .then(link => {
+        console.log("link", link)
+        const regex = /\/event=(\d+)/;
+        const match = link.url.match(regex);
+        const eventId = match[1]
+        console.log('event id', eventId);
+        RootNavigation.navigate('EventDetails', { event_id: eventId })
+        
+      })
+      .catch(err => console.error('An error occurred', err));
+    const removeLinkListener = dynamicLinks().onLink(handleDynamicLink);
+    // When the component is unmounted, remove the listener
+    return () => removeLinkListener();
     }, []);
 
     return (
