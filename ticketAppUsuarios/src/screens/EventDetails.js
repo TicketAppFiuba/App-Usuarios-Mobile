@@ -138,7 +138,7 @@ const EventDetails = ({ route, navigation }) => {
         <Ionicons name="ellipsis-vertical-outline" size={32} color="white" style={styles.optionsIcon} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.shareButton}>
-        <ShareButton />
+        <ShareButton event_id = {event_id} />
       </TouchableOpacity>
       {showOptions && (
         <View style={styles.optionsContainer}>
