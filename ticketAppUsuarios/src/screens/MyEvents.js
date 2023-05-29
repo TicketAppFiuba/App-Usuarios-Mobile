@@ -92,7 +92,7 @@ const MyEvents = ({ navigation }) => {
             id: event.Event.id,
             title: event.Event.title,
             date: GetDayOfWeek(event?.Event.date),
-            image: event?.Event.pic_id?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+            image: event?.Images[0].link ?? 'https://i.imgur.com/UYiroysl.jpg',
             distance: Math.ceil(event.Distance),
             category: event.Event.category,
             favorite: event.favorite,
