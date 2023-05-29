@@ -106,7 +106,7 @@ const MyEvents = ({ navigation }) => {
             image: event?.Event.pic_id?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             distance: Math.ceil(event.Distance),
             category: event.Event.category,
-            favorite: event.favorite,
+            favorite: event.Event.favorite,
             status: event.status,
           }));
         }
