@@ -25,7 +25,7 @@ const ShareButton = ({event_id, image, title, date, address, description }) => {
           "link": `https://ticketApp/event=${event_id}`,
           "socialMetaTagInfo": {
             "socialTitle": `${title} el ${date} en ${address}`,
-            "socialDescription": `${description}`,
+            "socialDescription": "¡No te lo pierdas!",
             "socialImageLink": `${image}`
           },
           "androidInfo": {
