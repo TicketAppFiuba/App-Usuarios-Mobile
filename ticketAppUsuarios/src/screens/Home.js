@@ -1,7 +1,9 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { API_BASE_URL } from '../constant.js';
+
+import * as Location from 'expo-location';
 
 import EventCard from '../components/EventCard';
 import EventCardLarge from '../components/EventCardLarge';
@@ -12,11 +14,17 @@ import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 export default function Home({ navigation }) {
   const [events, setEvents] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const fetchEvents = () => {
     AsyncStorageFunctions.getData('token')
       .then((token) => {
-        fetch(`${API_BASE_URL}/user/events`, {
+        let url = `${API_BASE_URL}/user/events`;
+        if (location) {
+          url += `?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}`;
+        }
+        fetch(url, {
           headers: { authorization: `Bearer ${token}` }
         })
           .then((response) => response.json())
@@ -40,12 +48,36 @@ export default function Home({ navigation }) {
           .finally(() => {
             setRefreshing(false);
           });
-      });
+      })
   };
 
-  useLayoutEffect(() => {
-    fetchEvents();
-  }, []);
+
+
+  useEffect(() => {
+            Location.requestForegroundPermissionsAsync()
+            .then(status => {
+                if (status !== 'granted') {
+                  setErrorMsg('Permission to access location was denied');
+                  return;
+                }
+            })
+            .then(()=>{
+                Location.getCurrentPositionAsync({})
+                .then(location => {
+                    setLocation(location);
+                    console.log(location)
+                }
+                )
+            })
+            .then(()=>{
+                fetchEvents()
+            })
+            .catch(error => {
+                console.log(error);
+            });
+  }, [location]);
+
+
 
   const handleRefresh = () => {
     setRefreshing(true);
