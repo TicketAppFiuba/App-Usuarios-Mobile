@@ -3,6 +3,8 @@ import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIn
 import { Ionicons } from '@expo/vector-icons';
 import { API_BASE_URL } from '../constant.js';
 
+import MapView, { PROVIDER_GOOGLE, Marker }  from 'react-native-maps';
+
 import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 
 import FAQItem from '../components/FAQItem';
@@ -39,6 +41,8 @@ const EventDetails = ({ route, navigation }) => {
             image: eventData.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             category: eventData.Event.category,
             address: eventData.Event.direction,
+            latitude: eventData.Event.latitude,
+            longitude: eventData.Event.longitude,
             description: JSON.parse(eventData.Event.description)['blocks'][0]['text'],
             agenda: eventData.Diary.map((section) => {
               return {
@@ -54,7 +58,7 @@ const EventDetails = ({ route, navigation }) => {
             }),
           };
           setEvent(mappedEvent);
-
+          
           reservationsData.forEach((event) => {
             if (event?.Event.id === event_id) {
               setReservationId(event.Reservation.code);
@@ -194,6 +198,23 @@ const EventDetails = ({ route, navigation }) => {
         <Text style={styles.sectionTitle}>Dirección</Text>
         <Text style={styles.address}>{event?.address}</Text>
         {/* Renderizar mapa con la ubicación del evento */}
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.mapContainer}
+            initialRegion={{
+              latitude: event?.latitude ? event?.latitude : 37.78825,
+              longitude: event?.longitude ? event?.longitude : -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            provider={PROVIDER_GOOGLE}
+          >
+          <Marker
+                coordinate={{latitude: event?.latitude, longitude: event?.longitude}}
+              />
+
+          </MapView>
+        </View>
       </View>
       <View style={styles.sectionContainer}>
         {event?.faqs.map((faq, index) => (
@@ -325,6 +346,13 @@ const styles = StyleSheet.create({
     right: 30,
     borderRadius: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  mapContainer: {
+    height: 200,
+    width: '100%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
   },
 });
 
