@@ -7,6 +7,7 @@ import MapView, { PROVIDER_GOOGLE, Marker }  from 'react-native-maps';
 
 import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 
+import WysiwygPreview from '../components/WysiwygPreview.js';
 import FAQItem from '../components/FAQItem';
 import DenunciaModal from '../components/DenunciaModal';
 import ShareButton from '../components/ShareButton';
@@ -34,6 +35,7 @@ const EventDetails = ({ route, navigation }) => {
         }).then((response) => response.json()),
       ])
         .then(([eventData, reservationsData]) => {
+          console.log("sds", eventData);
           const mappedEvent = {
             id: eventData.Event?.id,
             title: eventData.Event.title,
@@ -43,7 +45,7 @@ const EventDetails = ({ route, navigation }) => {
             address: eventData.Event.direction,
             latitude: eventData.Event.latitude,
             longitude: eventData.Event.longitude,
-            description: JSON.parse(eventData.Event.description)['blocks'][0]['text'],
+            description: eventData.Event.description,
             agenda: eventData.Diary.map((section) => {
               return {
                 time: section.time,
@@ -186,8 +188,13 @@ const EventDetails = ({ route, navigation }) => {
         <Text style={styles.date}>{event?.date}</Text>
         <Text style={styles.location}>{event?.location}</Text>
       </View>
-      <Text style={styles.description}>{event?.description}</Text>
+      <View style={{
+        paddingHorizontal: 20,
+      }}>
+        <WysiwygPreview content={event?.description} />
+      </View>
       <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Agenda</Text>
         {event?.agenda.map((item, index) => (
           <Text key={index} style={styles.agendaItem}>
             {item.time} - {item.activity}
@@ -217,6 +224,7 @@ const EventDetails = ({ route, navigation }) => {
         </View>
       </View>
       <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>FAQ</Text>
         {event?.faqs.map((faq, index) => (
           <FAQItem key={index} question={faq.question} answer={faq.answer} />
         ))}
