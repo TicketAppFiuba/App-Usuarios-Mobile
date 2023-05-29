@@ -20,24 +20,23 @@ const CustomCalendar = () => {
     const calendarEvents = {};
 
     events.forEach((item) => {
-      const eventDate = item.Event.date.split('T')[0];
-      console.log(eventDate);
+      const eventDate = item.date.split('T')[0];
       if (calendarEvents[eventDate]) {
         calendarEvents[eventDate].push({
-          title: item.Event.title,
-          direction: item.Event.direction,
-          image: item?.Images[0].link ?? 'https://i.imgur.com/UYiroysl.jpg',
-          event_id: item.Event.id,
-          date: GetDayOfWeek(item.Event.date),
+          title: item.title,
+          direction: item.direction,
+          image: item.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+          event_id: item.id,
+          date: GetDayOfWeek(item.date),
         });
       } else {
         calendarEvents[eventDate] = [
           {
-            title: item.Event.title,
-            direction: item.Event.direction,
-            image: item?.Images[0].link ?? 'https://i.imgur.com/UYiroysl.jpg',
-            event_id: item.Event.id,
-            date: GetDayOfWeek(item.Event.date),
+            title: item.title,
+            direction: item.direction,
+            image: item.link ?? 'https://i.imgur.com/UYiroysl.jpg',
+            event_id: item.id,
+            date: GetDayOfWeek(item.date),
           },
         ];
       }
@@ -136,7 +135,7 @@ const CustomCalendar = () => {
       <View style={styles.eventContainer}>
         {selectedEvents.length > 0 ? (
           selectedEvents.map((event, index) => (
-            console.log(event),
+            console.log("Ev", event),
             <EventCard
                 key={index}
                 title={event.title}
