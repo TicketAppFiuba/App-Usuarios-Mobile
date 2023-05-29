@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Modal, Button, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView, Modal, Button, Image } from 'react-native';
 import { CalendarList } from 'react-native-calendars';
 import { API_BASE_URL } from '../constant';
 import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
@@ -60,7 +60,7 @@ const CustomCalendar = () => {
         loadEvents(json);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("error: ", JSON.stringify(error));
       });
   };
 
@@ -132,10 +132,9 @@ const CustomCalendar = () => {
         markedDates={getMarkedDates()}
         renderDay={renderDay}
       />
-      <View style={styles.eventContainer}>
+      <ScrollView style={styles.eventContainer}>
         {selectedEvents.length > 0 ? (
           selectedEvents.map((event, index) => (
-            console.log("Ev", event),
             <EventCard
                 key={index}
                 title={event.title}
@@ -155,7 +154,7 @@ const CustomCalendar = () => {
             No hay eventos para esta fecha.
           </Text>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 };
