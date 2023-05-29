@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -7,6 +7,10 @@ import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 
 export default function EventCard({ event_id, title, date, image, distance, category, navigation, status, favorite }) {
   const [isLiked, setLiked] = useState(false);
+
+  useEffect(() => {
+    setLiked(favorite);
+  }, [favorite]);
 
   const handleLike = () => {
     setLiked(!isLiked);

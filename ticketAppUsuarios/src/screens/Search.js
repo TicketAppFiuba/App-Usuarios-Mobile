@@ -127,6 +127,7 @@ export default function Search({ navigation }) {
             category={event?.Event.category}
             navigation={navigation}
             event_id={event?.Event.id}
+            favorite={event?.favorite}
           />
         ))}
       </ScrollView>

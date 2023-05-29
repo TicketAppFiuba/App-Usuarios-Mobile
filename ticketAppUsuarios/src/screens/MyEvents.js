@@ -65,6 +65,7 @@ const MyEvents = ({ navigation }) => {
         category={event.category}
         status={event.status}
         navigation={navigation}
+        favorite={event.favorite}
       />
     ));
   };

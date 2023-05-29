@@ -30,6 +30,7 @@ export default function Home({ navigation }) {
                         image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
                         distance: Math.ceil(event.Distance),
                         category: event.Event.category,
+                        favorite: event.favorite
                     }
                 });
                 setEvents(mappedEvents);
@@ -74,6 +75,7 @@ export default function Home({ navigation }) {
                             image={event.image}
                             navigation={navigation}
                             event_id={event.id}
+                            favorite={event.favorite}
                         />
                     ))}                      
                     </View>
@@ -101,6 +103,7 @@ export default function Home({ navigation }) {
                         category={event.category}
                         navigation={navigation}
                         event_id={event.id}
+                        favorite={event.favorite}
                     />
                     ))}
                     </View>
