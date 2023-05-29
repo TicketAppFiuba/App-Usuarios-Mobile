@@ -53,7 +53,7 @@ export default function Home({ navigation }) {
 
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
             Location.requestForegroundPermissionsAsync()
             .then(status => {
                 if (status !== 'granted') {
