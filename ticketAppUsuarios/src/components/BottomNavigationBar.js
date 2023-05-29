@@ -48,6 +48,16 @@ const BottomNavigationBar = ({ activeTab, onTabChange }) => {
                             color={activeTab === 3 ? '#1286f7' : 'gray'}
                         />
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.tab}
+                        onPress={() => handleTabChange(4, 'CustomCalendar')}
+                    >
+                        <Ionicons
+                            name={activeTab === 4 ? 'calendar' : 'calendar-outline'}
+                            size={26}
+                            color={activeTab === 4 ? '#1286f7' : 'gray'}
+                        />
+                    </TouchableOpacity>
                 </View>
             ) : null}
         </View>
