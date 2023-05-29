@@ -63,6 +63,7 @@ const MyEvents = ({ navigation }) => {
         image={event.image}
         distance={event?.distance ? event.distance : ''}
         category={event.category}
+        status={event.status}
         navigation={navigation}
       />
     ));
@@ -87,12 +88,14 @@ const MyEvents = ({ navigation }) => {
         let mappedEvents = [];
         if (tab === 'liked') {
           mappedEvents = data.map((event) => ({
-            id: event.id,
-            title: event.title,
+            id: event.Event.id,
+            title: event.Event.title,
             date: GetDayOfWeek(event?.Event.date),
-            image: event?.Images[0]?.link  ?? 'https://i.imgur.com/UYiroysl.jpg',
+            image: event?.Event.pic_id?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             distance: Math.ceil(event.Distance),
-            category: event.category,
+            category: event.Event.category,
+            favorite: event.favorite,
+            status: event.status,
           }));
         } else {
           mappedEvents = data.map((event) => ({
@@ -102,6 +105,8 @@ const MyEvents = ({ navigation }) => {
             image: event?.Event.pic_id?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             distance: Math.ceil(event.Distance),
             category: event.Event.category,
+            favorite: event.favorite,
+            status: event.status,
           }));
         }
 
