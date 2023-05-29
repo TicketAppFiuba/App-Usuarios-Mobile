@@ -129,11 +129,10 @@ const EventDetails = ({ route, navigation }) => {
           }
       })
         .then((response) => {
-          console.log(response);
           navigation.navigate('CustomCalendar')
         })
         .catch((error) => {
-            console.error(error);
+            console.error("handle calendar: ", error);
         })
    })
 };
