@@ -146,7 +146,14 @@ const CustomCalendar = () => {
             />
           ))
         ) : (
-          <Text>No hay eventos para esta fecha.</Text>
+          <Text style={{
+            textAlign: 'center',
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginTop: 20,
+          }}>
+            No hay eventos para esta fecha.
+          </Text>
         )}
       </View>
     </View>
