@@ -238,7 +238,7 @@ const EventDetails = ({ route, navigation }) => {
       <TouchableOpacity style={styles.buttonContainer} onPress={(e) => handleCalendarClick(e, 'sign-in') }>
           <Text style={styles.buttonText}>Agregar al calendario</Text>
         </TouchableOpacity>
-      <DenunciaModal visible={isDenunciaModalVisible} onClose={handleCloseDenunciaModal} />
+      <DenunciaModal visible={isDenunciaModalVisible} onClose={handleCloseDenunciaModal} eventId={event_id}/>
     </ScrollView>
   );
 };

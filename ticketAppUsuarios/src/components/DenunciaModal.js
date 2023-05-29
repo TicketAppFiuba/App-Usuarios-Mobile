@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
+import { API_BASE_URL } from '../constant';
+
 const CATEGORIES = [
   'El evento parece ilegal o no cumple con nuestras políticas.',
   'El evento parece ser spam o fraude.',
@@ -11,7 +14,7 @@ const CATEGORIES = [
   'Otro motivo.',
 ];
 
-const DenunciaModal = ({ visible, onClose }) => {
+const DenunciaModal = ({ visible, onClose, eventId }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [description, setDescription] = useState('');
 
@@ -27,8 +30,33 @@ const DenunciaModal = ({ visible, onClose }) => {
 
   const handleDenunciaSubmit = () => {
     if (selectedCategory && description) {
-      // Realizar la lógica de envío de la denuncia
-      // ...
+        // Aquí podrías enviar la denuncia a tu servidor o hacer algo con ella
+        AsyncStorageFunctions.getData('token')
+          .then((token) => {
+              console.log(token)
+              fetch(`${API_BASE_URL}/user/event/complaint`, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": "Bearer " + token
+                      },
+                      body: JSON.stringify({
+                          "event_id": eventId,
+                          "category": selectedCategory,
+                          "description": description,
+                      }),
+                  })
+                  .then((response) => response.json())
+                  .then((json) => {
+                      console.log(json);
+                  })
+                  .catch((error) => {
+                      console.error(error);
+                  });
+          })
+          .catch((error) => {
+              console.error(error);
+          });
       onClose();
     }
   };
