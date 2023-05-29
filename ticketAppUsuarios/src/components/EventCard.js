@@ -42,20 +42,20 @@ export default function EventCard({ event_id, title, date, image, distance, cate
   const statusDisplay = () => {
     if (status === 'published') {
       return;
-    } else if (status === 'cancelled') {
+    } else if (status === 'canceled') {
       return 'Cancelado';
     } else if (status === 'finished') {
       return 'Finalizado';
-    } else {
+    } else if (status === 'suspended') {
       return 'Desconocido';
     }
   };
 
   const statusOpacity = () => {
-    if (status === 'published') {
-      return 1;
-    } else {
+    if (status === 'finished' || status === 'canceled') {
       return 0.3;
+    } else {
+      return 1;
     }
   };
 

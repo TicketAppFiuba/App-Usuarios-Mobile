@@ -96,7 +96,7 @@ const MyEvents = ({ navigation }) => {
             distance: Math.ceil(event.Distance),
             category: event.Event.category,
             favorite: event.favorite,
-            status: event.status,
+            status: event.Event.state,
           }));
         } else {
           mappedEvents = data.map((event) => ({
@@ -107,7 +107,7 @@ const MyEvents = ({ navigation }) => {
             distance: Math.ceil(event.Distance),
             category: event.Event.category,
             favorite: event.Event.favorite,
-            status: event.status,
+            status: event.Event.state,
           }));
         }
 
