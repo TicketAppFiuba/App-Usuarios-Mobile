@@ -164,6 +164,9 @@ export default function App() {
       .getInitialLink()
       .then(link => {
         console.log("link", link)
+        if (!link) {
+          return;
+        }
         const regex = /\/event=(\d+)/;
         const match = link.url.match(regex);
         const eventId = match[1]
