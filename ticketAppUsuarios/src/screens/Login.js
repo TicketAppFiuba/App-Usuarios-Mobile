@@ -26,6 +26,7 @@ export default function Login({ navigation }) {
   });
 
   const onGoogleButtonPress = async () => {
+    await GoogleSignin.signOut();
     // Check if your device supports Google Play
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     // Get the users ID token
@@ -37,11 +38,12 @@ export default function Login({ navigation }) {
     // Sign-in the user with the credential
     const user_sign_in = auth().signInWithCredential(googleCredential)
     user_sign_in.then((user) => {
+      console.log(user)
       setInputs({
         email: user.user.email,
         name: user.user.displayName,
       })
-      fetch(`${API_BASE_URL}/user/login?email=${inputs.email}&name=${inputs.name}`)
+      fetch(`${API_BASE_URL}/user/login?email=${user.user.email}&name=${user.user.displayName}`)
       .then((response) => {
         if (response.status == 400) {
           // suspended
