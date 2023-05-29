@@ -122,7 +122,7 @@ export default function Search({ navigation }) {
             key={index}
             title={event?.Event.title}
             date={GetDayOfWeek(event?.Event.date)}
-            image={event?.Images[0] ? event?.Images[0]["link"] : 'https://picsum.photos/700'}
+            image={event?.Images[0] ? event?.Images[0]["link"] : 'https://i.imgur.com/UYiroysl.jpg'}
             distance={event?.Event.distance}
             category={event?.Event.category}
             navigation={navigation}
