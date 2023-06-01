@@ -83,6 +83,14 @@ export default function Login({ navigation }) {
       alignItems: 'center',
       backgroundColor: '#fff',
     }}>
+
+            <Text style={{
+                fontWeight: 'bold',
+                fontSize: 48,
+                paddingBottom: 20,
+            }}>
+                𝓣𝓲𝓬𝓴𝓮𝓽 𝓐𝓹𝓹
+            </Text>
       <Button
       title="Google Sign-In"
       style={{
