@@ -51,30 +51,30 @@ export default function Home({ navigation }) {
       })
   };
 
+  const getLocation = () => {
+    Location.requestForegroundPermissionsAsync()
+    .then(status => {
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
+    })
+    .then(()=>{
+        Location.getCurrentPositionAsync({})
+        .then(location => {
+            setLocation(location);
+            console.log(location)
+        })
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
 
 
   useLayoutEffect(() => {
-            Location.requestForegroundPermissionsAsync()
-            .then(status => {
-                if (status !== 'granted') {
-                  setErrorMsg('Permission to access location was denied');
-                  return;
-                }
-            })
-            .then(()=>{
-                Location.getCurrentPositionAsync({})
-                .then(location => {
-                    setLocation(location);
-                    console.log(location)
-                }
-                )
-            })
-            .then(()=>{
-                fetchEvents()
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    getLocation()
+    fetchEvents();
   }, [location]);
 
 
