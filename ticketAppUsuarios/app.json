@@ -9,6 +9,12 @@
       {
         "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
       }
+    ],
+    [
+      "expo-calendar",
+      {
+        "calendarPermission": "The app needs to access your calendar."
+      }
     ]],
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

@@ -7,6 +7,7 @@ import MapView, { PROVIDER_GOOGLE, Marker }  from 'react-native-maps';
 
 import AsyncStorageFunctions from '../libs/LocalStorageHandlers.js';
 
+import CalendarScreen from '../components/Calendar.js';
 import WysiwygPreview from '../components/WysiwygPreview.js';
 import FAQItem from '../components/FAQItem';
 import DenunciaModal from '../components/DenunciaModal';
@@ -22,6 +23,7 @@ const EventDetails = ({ route, navigation }) => {
   const [reservationId, setReservationId] = useState(null);
   const [booked, setBooked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     setIsLoading(true);
@@ -35,7 +37,7 @@ const EventDetails = ({ route, navigation }) => {
         }).then((response) => response.json()),
       ])
         .then(([eventData, reservationsData]) => {
-          console.log("sds", eventData);
+          setDate(new Date(eventData.Event.date));
           const mappedEvent = {
             id: eventData.Event?.id,
             title: eventData.Event.title,
@@ -115,27 +117,7 @@ const EventDetails = ({ route, navigation }) => {
     });
   };
 
-  const handleCalendarClick = (e, n) => {     
-   
-    let url = `${API_BASE_URL}/user/event/calendar?event_id=${event_id}`;
-    
-    AsyncStorageFunctions.getData('token')
-     .then((token) => { 
-      fetch(url, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + token
-          }
-      })
-        .then((response) => {
-          navigation.navigate('CustomCalendar')
-        })
-        .catch((error) => {
-            console.error("handle calendar: ", error);
-        })
-   })
-};
+
 
   const handleOpenDenunciaModal = () => {
     setDenunciaModalVisible(true);
@@ -235,9 +217,27 @@ const EventDetails = ({ route, navigation }) => {
           <Text style={styles.buttonText}>Ver Ticket</Text>
         )}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer} onPress={(e) => handleCalendarClick(e, 'sign-in') }>
-          <Text style={styles.buttonText}>Agregar al calendario</Text>
-        </TouchableOpacity>
+        <View style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: 20,
+          paddingVertical: 20,
+          backgroundColor: 'white',
+        }}
+      >
+          <CalendarScreen eventDetails={
+            {
+              title: event?.title,
+              startDate: date,
+              endDate: date,
+              location: event?.address,
+              timeZone: 'America/New_York',
+              notes: "Evento creado desde la app de TicketApp"
+            }
+          }/>
+
+        </View>
       <DenunciaModal visible={isDenunciaModalVisible} onClose={handleCloseDenunciaModal} eventId={event_id}/>
     </ScrollView>
   );
