@@ -39,7 +39,7 @@ const EventDetails = ({ route, navigation }) => {
         .then(([eventData, reservationsData]) => {
           setDate(new Date(eventData.Event.date));
           const mappedEvent = {
-            id: eventData.Event?.id,
+            id: event_id,
             title: eventData.Event.title,
             date: GetDayOfWeek(eventData.Event.date),
             image: eventData.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
@@ -64,8 +64,8 @@ const EventDetails = ({ route, navigation }) => {
           setEvent(mappedEvent);
           
           reservationsData.forEach((event) => {
-            if (event?.Event.id === event_id) {
-              setReservationId(event.Reservation.code);
+            if (event?.id === event_id) {
+              setReservationId(event.code);
               setBooked(true);
             }
           });
@@ -82,7 +82,7 @@ const EventDetails = ({ route, navigation }) => {
   const handleReservation = () => {
     if (booked) {
       navigation.navigate('Ticket', {
-        event_id: event?.id,
+        event_id: event_id,
         booked: booked,
         title: event?.title,
         date: event?.date,
@@ -93,7 +93,7 @@ const EventDetails = ({ route, navigation }) => {
     AsyncStorageFunctions.getData('token').then((token) => {
       fetch(`${API_BASE_URL}/user/event/reservation`, {
         method: 'POST',
-        body: JSON.stringify({ event_id: event?.id, tickets: 1 }),
+        body: JSON.stringify({ event_id: event_id, tickets: 1 }),
         headers: {
           authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const EventDetails = ({ route, navigation }) => {
           setReservationId(data.code);
           setBooked(true);
           navigation.navigate('Ticket', {
-            event_id: event?.id,
+            event_id: event_id,
             booked: booked,
             title: event?.title,
             date: event?.date,
