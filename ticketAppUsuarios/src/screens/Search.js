@@ -121,7 +121,7 @@ export default function Search({ navigation }) {
           <EventCard
             key={index}
             title={event?.Event.title}
-            date={GetDayOfWeek(event?.Event.date)}
+            date={GetDayOfWeek(event?.Event.init_date)}
             image={event?.Images[0] ? event?.Images[0]["link"] : 'https://i.imgur.com/UYiroysl.jpg'}
             distance={event?.Event.distance}
             category={event?.Event.category}

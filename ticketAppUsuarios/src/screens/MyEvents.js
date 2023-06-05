@@ -90,7 +90,7 @@ const MyEvents = ({ navigation }) => {
           mappedEvents = data.map((event) => ({
             id: event.Event.id,
             title: event.Event.title,
-            date: GetDayOfWeek(event?.Event.date),
+            date: GetDayOfWeek(event?.Event.init_date),
             image: event?.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             category: event.Event.category,
             favorite: event.favorite,
@@ -100,7 +100,7 @@ const MyEvents = ({ navigation }) => {
           mappedEvents = data.map((event) => ({
             id: event.id,
             title: event.title,
-            date: GetDayOfWeek(event?.date),
+            date: GetDayOfWeek(event?.init_date),
             image: event?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             category: event.category,
             favorite: event.favorite,
