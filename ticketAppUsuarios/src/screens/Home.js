@@ -33,7 +33,7 @@ export default function Home({ navigation }) {
               return {
                 id: event.Event.id,
                 title: event.Event.title,
-                date: GetDayOfWeek(event.Event.date),
+                date: GetDayOfWeek(event.Event.init_date),
                 image: event.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
                 distance: Math.ceil(event.Distance),
                 category: event.Event.category,

@@ -37,11 +37,11 @@ const EventDetails = ({ route, navigation }) => {
         }).then((response) => response.json()),
       ])
         .then(([eventData, reservationsData]) => {
-          setDate(new Date(eventData.Event.date));
+          setDate(new Date(eventData.Event.init_date));
           const mappedEvent = {
             id: event_id,
             title: eventData.Event.title,
-            date: GetDayOfWeek(eventData.Event.date),
+            date: GetDayOfWeek(eventData.Event.init_date),
             image: eventData.Images[0]?.link ?? 'https://i.imgur.com/UYiroysl.jpg',
             category: eventData.Event.category,
             address: eventData.Event.direction,

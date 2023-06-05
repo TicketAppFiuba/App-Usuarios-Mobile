@@ -37,7 +37,7 @@ const CalendarScreen = ({eventDetails}) => {
       Linking.openURL(`content://com.android.calendar/events/${eventId}`);
     })
   
-    setIsMenuVisible(false);
+   
   };
 
   return (
