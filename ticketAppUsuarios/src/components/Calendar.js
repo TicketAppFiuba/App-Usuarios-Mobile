@@ -5,9 +5,7 @@ import { Linking } from 'react-native';
 
 const CalendarScreen = ({eventDetails}) => {
   const [calendarPermission, setCalendarPermission] = useState(false);
-  const [calendars, setCalendars] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState(null);
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   useEffect(() => {
     fetchCalendars();
@@ -19,9 +17,9 @@ const CalendarScreen = ({eventDetails}) => {
     setCalendarPermission(status === 'granted');
 
     if (status === 'granted') {
-      const calendarList = await Calendar.getCalendarsAsync();
-      setCalendars(calendarList);
-      setSelectedCalendar(calendarList[0]?.id || null);
+      const calendars = await Calendar.getCalendarsAsync();
+      const calendar = calendars.filter(calendar => calendar.allowsModifications)[0];
+      setSelectedCalendar(calendar?.id || null);
     }
   };
 
@@ -29,43 +27,17 @@ const CalendarScreen = ({eventDetails}) => {
     if (calendarPermission && calendarId) {
       console.log(eventDetails)
 
-
-      await Calendar.createEventAsync(calendarId, eventDetails);
+      return await Calendar.createEventAsync(calendarId, eventDetails);
     }
   };
 
-  const handleMenuPress = () => {
-    setIsMenuVisible(true);
-  };
-
-  const handleMenuItemPress = (calendarId) => {
-    addEventToCalendar(calendarId).then(() => {
+  const handleMenuItemPress = () => {
+    addEventToCalendar(selectedCalendar).then((eventId) => {
       // Redirect the user to the Calendar app
-      Linking.openURL(`content://com.android.calendar/events/${eventDetails.id}`);
+      Linking.openURL(`content://com.android.calendar/events/${eventId}`);
     })
   
     setIsMenuVisible(false);
-  };
-
-  const renderMenu = () => {
-    return (
-      <Modal visible={isMenuVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {calendars.map((calendar) => (
-              <TouchableOpacity
-                key={calendar.id}
-                style={styles.menuItem}
-                onPress={() => handleMenuItemPress(calendar.id)}
-              >
-                <Text>{calendar.title}</Text>
-              </TouchableOpacity>
-            ))}
-            <Button title="Cerrar" onPress={() => setIsMenuVisible(false)} />
-          </View>
-        </View>
-      </Modal>
-    );
   };
 
   return (
@@ -74,14 +46,13 @@ const CalendarScreen = ({eventDetails}) => {
         <Button title="Obtener permiso" onPress={fetchCalendars} />
       ) : (
         <View style={styles.container}>
-          <TouchableOpacity style={styles.button} onPress={handleMenuPress}>
+          <TouchableOpacity style={styles.button} onPress={handleMenuItemPress}>
             <Text style={{
               color: '#FFFFFF',
               fontSize: 16,
               fontWeight: 'bold',
             }}>Agregar al calendario</Text>
           </TouchableOpacity>
-          {renderMenu()}
         </View>
       )}
     </View>
