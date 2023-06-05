@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, Platform, TouchableOpacity, Text, StyleSheet, Modal } from 'react-native';
 import * as Calendar from 'expo-calendar';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Linking } from 'react-native';
 
 const CalendarScreen = ({eventDetails}) => {
   const [calendarPermission, setCalendarPermission] = useState(false);
@@ -39,7 +39,11 @@ const CalendarScreen = ({eventDetails}) => {
   };
 
   const handleMenuItemPress = (calendarId) => {
-    addEventToCalendar(calendarId);
+    addEventToCalendar(calendarId).then(() => {
+      // Redirect the user to the Calendar app
+      Linking.openURL(`content://com.android.calendar/events/${eventDetails.id}`);
+    })
+  
     setIsMenuVisible(false);
   };
 
